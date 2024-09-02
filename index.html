@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입코딩 놀이터</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+      :root {
+          --pastel-primary: #A8D8EA;
+          --pastel-secondary: #AA96DA;
+          --pastel-success: #FCBAD3;
+          --pastel-info: #FFFFD2;
+          --pastel-warning: #FFA69E;
+          --pastel-danger: #FF9AA2;
+          --pastel-light: #F8F9FA;
+          --pastel-dark: #6B7B8C;
+      }
+  
+      body {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+          background-color: var(--pastel-light);
+      }
+      main {
+          flex: 1;
+      }
+      .card {
+          height: 100%;
+          transition: transform 0.3s;
+          background-color: #FFFFFF;
+          border: none;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+      .card:hover {
+          transform: translateY(-5px);
+      }
+      .like-btn {
+          cursor: pointer;
+          user-select: none;
+      }
+      .like-btn:hover, .like-btn.active {
+          color: var(--pastel-danger);
+      }
+      #addCardBtn {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          width: 60px;
+          height: 60px;
+          border-radius: 30px;
+          font-size: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+          background-color: var(--pastel-primary);
+          border-color: var(--pastel-primary);
+          color: var(--pastel-dark);
+      }
+      #htmlPreview {
+          width: 100%;
+          height: 300px;
+          border: none;
+      }
+      .btn-primary {
+          background-color: var(--pastel-primary);
+          border-color: var(--pastel-primary);
+          color: var(--pastel-dark);
+      }
+      .btn-primary:hover {
+          background-color: #97C4D3;
+          border-color: #97C4D3;
+          color: var(--pastel-dark);
+      }
+      .btn-secondary {
+          background-color: var(--pastel-secondary);
+          border-color: var(--pastel-secondary);
+          color: white;
+      }
+      .btn-secondary:hover {
+          background-color: #9A87C4;
+          border-color: #9A87C4;
+      }
+      .btn-success {
+          background-color: var(--pastel-success);
+          border-color: var(--pastel-success);
+          color: var(--pastel-dark);
+      }
+      .btn-success:hover {
+          background-color: #E2A7BC;
+          border-color: #E2A7BC;
+          color: var(--pastel-dark);
+      }
+      .bg-primary {
+          background-color: var(--pastel-primary) !important;
+      }
+      .bg-dark {
+          background-color: var(--pastel-dark) !important;
+      }
+  </style>
+</head>
+<body>
+    <header class="bg-primary text-white py-4">
+        <div class="container">
+            <h1 class="display-4" id="pageTitle">입코딩 놀이터</h1>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <div id="mainContent">
+            <div class="row g-4" id="categoryCards"></div>
+        </div>
+        <div id="detailContent" style="display: none;">
+            <button onclick="showMain()" class="btn btn-secondary mb-4">뒤로 가기</button>
+            <div class="row g-4" id="sampleCards"></div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">hohohoho0425@gmail.com</p>
+        </div>
+    </footer>
+
+    <button id="addCardBtn" class="btn btn-primary" onclick="addNewCard()" style="display: none;">+</button>
+
+    <!-- HTML 편집을 위한 모달 -->
+    <div class="modal fade" id="htmlEditorModal" tabindex="-1" aria-labelledby="htmlEditorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="htmlEditorModalLabel">HTML 편집</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="htmlEditor" class="form-control" rows="10"></textarea>
+                    <h6 class="mt-3">미리보기:</h6>
+                    <iframe id="htmlPreview"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary" onclick="saveHtml()">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentCategory = '';
+        let htmlContents = {};
+        let lectureCards = [];
+        const categories = [
+            { id: 'free', title: '강의', description: 'AI 프로젝트 강의를 보면서 나만의 프로젝트를 만들어 봅시다.' },
+            { id: 'automation', title: '강의 자료', description: '강의 자료를 확인할 수 있습니다.' },
+            { id: 'lecture', title: '놀이터', description: '여러분이 만든 프로젝트를 테스트하고 공유할 수 있습니다.' }
+        ];
+
+        function initializeApp() {
+            renderCategoryCards();
+            document.getElementById('htmlEditor').addEventListener('input', updatePreview);
+        }
+
+        function renderCategoryCards() {
+            const categoryCards = document.getElementById('categoryCards');
+            categoryCards.innerHTML = categories.map(category => `
+                <div class="col-md-4">
+                    <div class="card h-100 shadow">
+                        <img src="/api/placeholder/400/200" class="card-img-top" alt="${category.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${category.title}</h5>
+                            <p class="card-text">${category.description}</p>
+                            <button onclick="showDetail('${category.id}')" class="btn btn-primary">자세히 보기</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showDetail(category) {
+            currentCategory = category;
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('detailContent').style.display = 'block';
+            document.getElementById('pageTitle').innerText = getCategoryTitle(category);
+            
+            const sampleCards = document.getElementById('sampleCards');
+            sampleCards.innerHTML = '';
+            
+            if (category === 'lecture') {
+                if (lectureCards.length === 0) {
+                    for (let i = 1; i <= 3; i++) {
+                        lectureCards.push({
+                            id: i,
+                            title: `강의 샘플 ${i}`,
+                            description: '이 강의 자료에 대한 간단한 설명입니다.',
+                            likes: 0
+                        });
+                    }
+                }
+                renderLectureCards();
+                document.getElementById('addCardBtn').style.display = 'flex';
+            } else {
+                for (let i = 1; i <= 3; i++) {
+                    sampleCards.innerHTML += getDefaultCardHtml(i);
+                }
+                document.getElementById('addCardBtn').style.display = 'none';
+            }
+        }
+
+        function renderLectureCards() {
+            const sampleCards = document.getElementById('sampleCards');
+            sampleCards.innerHTML = '';
+            lectureCards.sort((a, b) => b.likes - a.likes);
+            lectureCards.forEach(card => {
+                sampleCards.innerHTML += getLectureCardHtml(card);
+            });
+        }
+
+        function getDefaultCardHtml(index) {
+            return `
+                <div class="col-md-4">
+                    <div class="card h-100 shadow">
+                        <img src="/api/placeholder/400/200" class="card-img-top" alt="샘플 ${index}">
+                        <div class="card-body">
+                            <h5 class="card-title">${currentCategory} 샘플 ${index}</h5>
+                            <p class="card-text">이 샘플에 대한 간단한 설명입니다.</p>
+                            <a href="#" class="btn btn-primary">더 알아보기</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getLectureCardHtml(card) {
+            return `
+                <div class="col-md-4">
+                    <div class="card h-100 shadow">
+                        <img src="/api/placeholder/400/200" class="card-img-top" alt="${card.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${card.title}</h5>
+                            <p class="card-text">${card.description}</p>
+                            <button class="btn btn-primary" onclick="editHtml(${card.id})">HTML 편집</button>
+                            <button class="btn btn-success" onclick="deployHtml(${card.id})">배포</button>
+                            <div class="mt-2">
+                                <span class="like-btn ${card.likes > 0 ? 'active' : ''}" onclick="toggleLike(${card.id})">
+                                    <i class="fas fa-heart"></i> ${card.likes}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleLike(id) {
+            const card = lectureCards.find(c => c.id === id);
+            if (card) {
+                card.likes = card.likes > 0 ? 0 : 1;
+                renderLectureCards();
+            }
+        }
+
+        function addNewCard() {
+            const newId = Math.max(...lectureCards.map(c => c.id), 0) + 1;
+            lectureCards.push({
+                id: newId,
+                title: `새 강의 샘플 ${newId}`,
+                description: '이 강의 자료에 대한 설명을 입력하세요.',
+                likes: 0
+            });
+            renderLectureCards();
+        }
+
+        function showMain() {
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('detailContent').style.display = 'none';
+            document.getElementById('pageTitle').innerText = '인공지능한쌤';
+            document.getElementById('addCardBtn').style.display = 'none';
+        }
+
+        function getCategoryTitle(category) {
+            const foundCategory = categories.find(c => c.id === category);
+            return foundCategory ? foundCategory.title : '카테고리';
+        }
+
+        function editHtml(index) {
+            const modal = new bootstrap.Modal(document.getElementById('htmlEditorModal'));
+            const editor = document.getElementById('htmlEditor');
+            if (editor) {
+                editor.value = htmlContents[`lecture_${index}`] || '';
+                updatePreview();
+                modal.show();
+                editor.dataset.lectureIndex = index;
+            } else {
+                console.error('HTML Editor not found');
+            }
+        }
+
+        function saveHtml() {
+            const editor = document.getElementById('htmlEditor');
+            if (editor) {
+                const index = editor.dataset.lectureIndex;
+                htmlContents[`lecture_${index}`] = editor.value;
+                const modal = bootstrap.Modal.getInstance(document.getElementById('htmlEditorModal'));
+                if (modal) {
+                    modal.hide();
+                }
+            } else {
+                console.error('HTML Editor not found');
+            }
+        }
+
+        function deployHtml(index) {
+            const html = htmlContents[`lecture_${index}`];
+            if (html) {
+                const deployWindow = window.open('', '_blank');
+                deployWindow.document.write(html);
+                deployWindow.document.close();
+            } else {
+                alert('배포할 HTML 내용이 없습니다. 먼저 HTML을 편집해주세요.');
+            }
+        }
+
+        function updatePreview() {
+            const editor = document.getElementById('htmlEditor');
+            const preview = document.getElementById('htmlPreview');
+            if (editor && preview) {
+                preview.srcdoc = editor.value;
+            }
+        }
+
+        // 페이지 로드 시 앱 초기화
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
