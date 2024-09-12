@@ -343,9 +343,24 @@
             playground: []
         };
         const categories = [
-            { id: 'lecture', title: 'Lectures', description: "Let's watch AI project lectures" },
-            { id: 'material', title: 'Lecture materials', description: 'You can check the lecture materials.' },
-            { id: 'playground', title: 'Playground', description: 'You can practice your own projects.' }
+            { 
+                id: 'lecture', 
+                title: 'Lectures', 
+                description: "Let's watch AI project lectures",
+                imageUrl: 'https://imgur.com/Uyxjppa.jpg'
+            },
+            { 
+                id: 'material', 
+                title: 'Lecture materials', 
+                description: 'You can check the lecture materials.',
+                imageUrl: 'https://imgur.com/h4XOC0d.jpg'
+            },
+            { 
+                id: 'playground', 
+                title: 'Playground', 
+                description: 'You can practice your own projects.',
+                imageUrl: 'https://imgur.com/jIzTx3M.jpg'
+            }
         ];
 
         function initializeApp() {
@@ -357,7 +372,7 @@
             categoryCards.innerHTML = categories.map(category => `
                 <div class="col-md-4">
                     <div class="card h-100 shadow">
-                        <img src="/api/placeholder/400/200" class="card-img-top" alt="${category.title}">
+                        <img src="${category.imageUrl}" class="card-img-top" alt="${category.title}">
                         <div class="card-body">
                             <h5 class="card-title">${category.title}</h5>
                             <p class="card-text">${category.description}</p>
