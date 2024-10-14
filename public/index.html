@@ -162,11 +162,11 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const firestoreDb = getFirestore(app);
 
     // 전역 변수로 내보내기
     window.firebaseFunctions = {
-      db,
+      db: firestoreDb,
       collection,
       addDoc,
       getDocs,
@@ -409,7 +409,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    const { db, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc } = firebaseFunctions;
+    const { db, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc } = window.firebaseFunctions;
 
     let currentCategory = '';
     let cards = {
