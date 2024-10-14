@@ -143,9 +143,22 @@
     }
   </style>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
-  <script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      orderBy,
+      query,
+      doc,
+      getDoc,
+      updateDoc,
+      deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDF86DoNANL6MZFVW9fN4VxpQ1mbGywm_M",
       authDomain: "talkcoding-88821.firebaseapp.com",
@@ -155,9 +168,23 @@
       appId: "1:190522086889:web:2d2e95ef080650de736778",
       measurementId: "G-SV9SXNK3Y8"
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+
+    // Firebase 함수들을 객체로 내보내기
+    export const firebaseFunctions = {
+      db,
+      collection,
+      addDoc,
+      getDocs,
+      orderBy,
+      query,
+      doc,
+      getDoc,
+      updateDoc,
+      deleteDoc
+    };
   </script>
+
+
 
 </head>
 
@@ -385,7 +412,10 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-  <script>
+  <script type="module">
+    import { firebaseFunctions } from '#firebase-init';
+    const { db, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc } = firebaseFunctions;
+
     let currentCategory = '';
     let cards = {
       lecture: [],
@@ -442,16 +472,20 @@
       renderCards();
     }
 
-    function renderCards() {
+    async function renderCards() {
       const sampleCards = document.getElementById('sampleCards');
       sampleCards.innerHTML = '';
-      db.collection(currentCategory).orderBy('likes', 'desc').get().then((querySnapshot) => {
+      try {
+        const q = query(collection(db, currentCategory), orderBy('likes', 'desc'));
+        const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
           const card = doc.data();
           card.id = doc.id;
           sampleCards.innerHTML += getCardHtml(card);
         });
-      });
+      } catch (error) {
+        console.error("Error getting documents: ", error);
+      }
     }
 
     function getCardHtml(card) {
@@ -496,18 +530,20 @@
             `;
     }
 
-    function toggleLike(id) {
-      const docRef = db.collection(currentCategory).doc(id);
-      docRef.get().then((doc) => {
-        if (doc.exists) {
-          const currentLikes = doc.data().likes || 0;
-          docRef.update({
+    async function toggleLike(id) {
+      try {
+        const docRef = doc(db, currentCategory, id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const currentLikes = docSnap.data().likes || 0;
+          await updateDoc(docRef, {
             likes: currentLikes > 0 ? 0 : 1
-          }).then(() => {
-            renderCards();
           });
+          await renderCards();
         }
-      });
+      } catch (error) {
+        console.error("Error toggling like: ", error);
+      }
     }
 
     function promptPassword() {
@@ -546,7 +582,7 @@
     }
 
     // addNewCard 함수 수정
-    function addNewCard() {
+    async function addNewCard() {
       const title = document.getElementById('cardTitle').value;
       const description = document.getElementById('cardDescription').value;
       const youtubeLink = document.getElementById('cardYoutubeLink').value;
@@ -569,12 +605,16 @@
           newCard.htmlContent = htmlContent;
         }
 
-        db.collection(currentCategory).add(newCard).then(() => {
-          renderCards();
+        try {
+          await addDoc(collection(db, currentCategory), newCard);
+          await renderCards();
           const modal = bootstrap.Modal.getInstance(document.getElementById('newCardModal'));
           modal.hide();
           document.getElementById('newCardForm').reset();
-        });
+        } catch (error) {
+          console.error("Error adding new card: ", error);
+          alert('카드 추가 중 오류가 발생했습니다.');
+        }
       } else {
         alert('모든 필드를 입력해주세요.');
       }
@@ -593,24 +633,36 @@
     }
 
 
-    function showEditCardModal(cardId) {
-      const card = cards[currentCategory].find(c => c.id === cardId);
-      if (card) {
-        document.getElementById('editCardId').value = card.id;
-        document.getElementById('editCardTitle').value = card.title;
-        document.getElementById('editCardDescription').value = card.description;
-        if (currentCategory === 'lecture') {
-          document.getElementById('editCardYoutubeLink').value = card.youtubeLink;
-        } else if (currentCategory === 'playground') {
-          document.getElementById('editCardAuthor').value = card.author;
-        }
+    async function showEditCardModal(cardId) {
+      try {
+        const docRef = doc(db, currentCategory, cardId);
+        const docSnap = await getDoc(docRef);
 
-        const modal = new bootstrap.Modal(document.getElementById('editCardModal'));
-        modal.show();
+        if (docSnap.exists()) {
+          const card = docSnap.data();
+          card.id = docSnap.id;
+
+          document.getElementById('editCardId').value = card.id;
+          document.getElementById('editCardTitle').value = card.title;
+          document.getElementById('editCardDescription').value = card.description;
+
+          if (currentCategory === 'lecture') {
+            document.getElementById('editCardYoutubeLink').value = card.youtubeLink;
+          } else if (currentCategory === 'playground') {
+            document.getElementById('editCardAuthor').value = card.author;
+          }
+
+          const modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+          modal.show();
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error getting document:", error);
       }
     }
 
-    function saveEditedCard() {
+    async function saveEditedCard() {
       const id = document.getElementById('editCardId').value;
       const title = document.getElementById('editCardTitle').value;
       const description = document.getElementById('editCardDescription').value;
@@ -629,11 +681,14 @@
           updatedCard.author = author;
         }
 
-        db.collection(currentCategory).doc(id).update(updatedCard).then(() => {
-          renderCards();
+        try {
+          await updateDoc(doc(db, currentCategory, id), updatedCard);
+          await renderCards();
           const modal = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
           modal.hide();
-        });
+        } catch (error) {
+          console.error("Error updating card: ", error);
+        }
       } else {
         alert('모든 필드를 입력해주세요.');
       }
@@ -656,24 +711,26 @@
       document.getElementById('htmlPreview').innerHTML = htmlContent;
     }
 
-    function addNewMaterialCard() {
+    async function addNewMaterialCard() {
       const title = document.getElementById('materialCardTitle').value;
       const description = document.getElementById('materialCardDescription').value;
       const htmlContent = document.getElementById('materialCardHtml').value;
 
       if (title && description) {
-        const newId = Math.max(...cards[currentCategory].map(c => c.id), 0) + 1;
-        cards[currentCategory].push({
-          id: newId,
-          title: title,
-          description: description,
-          htmlContent: htmlContent,
-          likes: 0
-        });
-        renderCards();
-        const modal = bootstrap.Modal.getInstance(document.getElementById('newMaterialCardModal'));
-        modal.hide();
-        document.getElementById('newMaterialCardForm').reset();
+        try {
+          await addDoc(collection(db, currentCategory), {
+            title,
+            description,
+            htmlContent,
+            likes: 0
+          });
+          await renderCards();
+          const modal = bootstrap.Modal.getInstance(document.getElementById('newMaterialCardModal'));
+          modal.hide();
+          document.getElementById('newMaterialCardForm').reset();
+        } catch (error) {
+          console.error("Error adding new material card: ", error);
+        }
       } else {
         alert('제목과 내용을 입력해주세요.');
       }
@@ -712,23 +769,24 @@
       iframe.srcdoc = htmlContent;
     }
 
-    function saveEditedMaterial() {
-      const id = parseInt(document.getElementById('editMaterialId').value);
+    async function saveEditedMaterial() {
+      const id = document.getElementById('editMaterialId').value;
       const title = document.getElementById('editMaterialTitle').value;
       const description = document.getElementById('editMaterialDescription').value;
       const htmlContent = document.getElementById('editMaterialHtml').value;
 
       if (title && description) {
-        const cardIndex = cards[currentCategory].findIndex(c => c.id === id);
-        if (cardIndex !== -1) {
-          cards[currentCategory][cardIndex] = {
-            ...cards[currentCategory][cardIndex],
+        try {
+          await updateDoc(doc(db, currentCategory, id), {
             title,
             description,
             htmlContent
-          };
-          renderCards();
-          closeModal('materialContentModal'); // 수정된 부분
+          });
+          await renderCards();
+          closeModal('materialContentModal');
+        } catch (error) {
+          console.error("Error updating document: ", error);
+          alert('자료 수정 중 오류가 발생했습니다.');
         }
       } else {
         alert('제목과 내용을 입력해주세요.');
@@ -795,32 +853,43 @@
 
 
     // showMaterialContent 함수 수정 - view content를 클릭했을 때 보이는 모달
-    function showMaterialContent(cardId) {
-      const card = cards[currentCategory].find(c => c.id === cardId);
-      if (card) {
-        const iframe = document.createElement('iframe');
-        iframe.srcdoc = card.htmlContent || '내용이 없습니다.';
-        iframe.style.width = '100%';
-        iframe.style.height = '400px';
-        iframe.style.border = 'none';
-        iframe.sandbox = 'allow-scripts';
+    async function showMaterialContent(cardId) {
+      try {
+        const docRef = doc(db, currentCategory, cardId);
+        const docSnap = await getDoc(docRef);
 
-        const contentView = document.getElementById('materialContentView');
-        contentView.innerHTML = '';
-        contentView.appendChild(iframe);
+        if (docSnap.exists()) {
+          const card = docSnap.data();
+          card.id = docSnap.id;
 
-        document.getElementById('editMaterialId').value = cardId;
-        document.getElementById('editMaterialHtml').value = card.htmlContent || '';
+          const iframe = document.createElement('iframe');
+          iframe.srcdoc = card.htmlContent || '내용이 없습니다.';
+          iframe.style.width = '100%';
+          iframe.style.height = '400px';
+          iframe.style.border = 'none';
+          iframe.sandbox = 'allow-scripts';
 
-        document.getElementById('materialContentView').style.display = 'block';
-        document.getElementById('materialContentEdit').style.display = 'none';
-        document.getElementById('copyCodeBtn').style.display = 'inline-block';
-        document.getElementById('editModeBtn').style.display = 'none';
-        document.getElementById('deleteMaterialBtn').style.display = 'none'; // Hide delete button
-        document.getElementById('saveMaterialBtn').style.display = 'none';
+          const contentView = document.getElementById('materialContentView');
+          contentView.innerHTML = '';
+          contentView.appendChild(iframe);
 
-        const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
-        modal.show();
+          document.getElementById('editMaterialId').value = card.id;
+          document.getElementById('editMaterialHtml').value = card.htmlContent || '';
+
+          document.getElementById('materialContentView').style.display = 'block';
+          document.getElementById('materialContentEdit').style.display = 'none';
+          document.getElementById('copyCodeBtn').style.display = 'inline-block';
+          document.getElementById('editModeBtn').style.display = 'inline-block';
+          document.getElementById('deleteMaterialBtn').style.display = 'none';
+          document.getElementById('saveMaterialBtn').style.display = 'none';
+
+          const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
+          modal.show();
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error getting document:", error);
       }
     }
 
@@ -839,24 +908,28 @@
       }, { once: true });
     }
 
-    function deleteCard() {
+    async function deleteCard() {
       const cardId = document.getElementById('editCardId').value;
       if (confirm('Are you sure to delete?')) {
-        db.collection(currentCategory).doc(cardId).delete().then(() => {
-          renderCards();
+        try {
+          await deleteDoc(doc(db, currentCategory, cardId));
+          await renderCards();
           closeModal('editCardModal');
-        });
+        } catch (error) {
+          console.error("Error deleting card: ", error);
+        }
       }
     }
 
-    function deleteMaterial() {
-      const cardId = parseInt(document.getElementById('editMaterialId').value);
+    async function deleteMaterial() {
+      const cardId = document.getElementById('editMaterialId').value;
       if (confirm('Are you sure to delete?')) {
-        const cardIndex = cards[currentCategory].findIndex(c => c.id === cardId);
-        if (cardIndex !== -1) {
-          cards[currentCategory].splice(cardIndex, 1);
-          renderCards();
+        try {
+          await deleteDoc(doc(db, currentCategory, cardId));
+          await renderCards();
           closeModal('materialContentModal');
+        } catch (error) {
+          console.error("Error deleting material: ", error);
         }
       }
     }
