@@ -177,6 +177,9 @@
       updateDoc,
       deleteDoc
     };
+
+    // Dispatch an event when Firebase is initialized
+    window.dispatchEvent(new Event('firebaseLoaded'));
   </script>
 
 
@@ -409,6 +412,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
   <script>
+    // Wait for Firebase to be loaded before initializing the app
+  window.addEventListener('firebaseLoaded', () => {
     const { db, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc } = window.firebaseFunctions;
 
     let currentCategory = '';
@@ -964,6 +969,7 @@
 
     // 페이지 로드 시 앱 초기화
     document.addEventListener('DOMContentLoaded', initializeApp);
+  });
   </script>
 
 </body>
