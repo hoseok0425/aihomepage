@@ -423,6 +423,7 @@
         material: [],
         playground: []
       };
+
       const categories = [
         {
           id: 'lecture',
@@ -443,8 +444,11 @@
           imageUrl: 'https://imgur.com/jIzTx3M.jpg'
         }
       ];
-
-      initializeApp();
+      // 페이지 로드 시 앱 초기화
+      document.addEventListener('DOMContentLoaded', () => {
+        // Firebase 로딩이 완료된 후에 초기화를 진행합니다.
+        initializeApp();
+      });
 
       function initializeApp() {
         renderCategoryCards();
