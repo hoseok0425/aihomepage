@@ -146,18 +146,9 @@
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      orderBy,
-      query,
-      doc,
-      getDoc,
-      updateDoc,
-      deleteDoc
-    } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc }
+      from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
     // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDF86DoNANL6MZFVW9fN4VxpQ1mbGywm_M",
@@ -169,8 +160,12 @@
       measurementId: "G-SV9SXNK3Y8"
     };
 
-    // Firebase 함수들을 객체로 내보내기
-    export const firebaseFunctions = {
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 전역 변수로 내보내기
+    window.firebaseFunctions = {
       db,
       collection,
       addDoc,
@@ -412,8 +407,8 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-  <script type="module">
-    import { firebaseFunctions } from '#firebase-init';
+
+  <script>
     const { db, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc } = firebaseFunctions;
 
     let currentCategory = '';
@@ -794,29 +789,39 @@
     }
 
     // 3 & 4. Three dots 기능 수정
-    function showEditOptions(cardId) {
-      const card = cards[currentCategory].find(c => c.id === cardId);
-      if (!card) return;
+    async function showEditOptions(cardId) {
+      try {
+        const docRef = doc(db, currentCategory, cardId);
+        const docSnap = await getDoc(docRef);
 
-      let password;
-      if (currentCategory === 'playground') {
-        password = prompt("암호를 입력하세요:");
-        if (password !== card.password && password !== "0425") {
-          alert("잘못된 암호입니다.");
-          return;
-        }
-      } else {
-        password = prompt("암호를 입력하세요:");
-        if (password !== "0425") {
-          alert("잘못된 암호입니다.");
-          return;
-        }
-      }
+        if (docSnap.exists()) {
+          const card = docSnap.data();
+          let password;
 
-      if (currentCategory === 'lecture') {
-        showEditCardModal(cardId);
-      } else if (currentCategory === 'material' || currentCategory === 'playground') {
-        showMaterialEditMode(cardId);
+          if (currentCategory === 'playground') {
+            password = prompt("암호를 입력하세요:");
+            if (password !== card.password && password !== "0425") {
+              alert("잘못된 암호입니다.");
+              return;
+            }
+          } else {
+            password = prompt("암호를 입력하세요:");
+            if (password !== "0425") {
+              alert("잘못된 암호입니다.");
+              return;
+            }
+          }
+
+          if (currentCategory === 'lecture') {
+            showEditCardModal(cardId);
+          } else if (currentCategory === 'material' || currentCategory === 'playground') {
+            showMaterialEditMode(cardId);
+          }
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error getting document:", error);
       }
     }
 
@@ -830,24 +835,35 @@
       });
     }
 
-    function showMaterialEditMode(cardId) {
-      const card = cards[currentCategory].find(c => c.id === cardId);
-      if (card) {
-        document.getElementById('editMaterialId').value = cardId;
-        document.getElementById('editMaterialTitle').value = card.title || '';
-        document.getElementById('editMaterialDescription').value = card.description || '';
-        document.getElementById('editMaterialHtml').value = card.htmlContent || '';
-        updateEditPreview();
+    async function showMaterialEditMode(cardId) {
+      try {
+        const docRef = doc(db, currentCategory, cardId);
+        const docSnap = await getDoc(docRef);
 
-        document.getElementById('materialContentView').style.display = 'none';
-        document.getElementById('materialContentEdit').style.display = 'block';
-        document.getElementById('copyCodeBtn').style.display = 'inline-block';
-        document.getElementById('editModeBtn').style.display = 'none';
-        document.getElementById('saveMaterialBtn').style.display = 'inline-block';
-        document.getElementById('deleteMaterialBtn').style.display = 'inline-block'; // Show delete button
+        if (docSnap.exists()) {
+          const card = docSnap.data();
+          card.id = docSnap.id;
 
-        const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
-        modal.show();
+          document.getElementById('editMaterialId').value = card.id;
+          document.getElementById('editMaterialTitle').value = card.title || '';
+          document.getElementById('editMaterialDescription').value = card.description || '';
+          document.getElementById('editMaterialHtml').value = card.htmlContent || '';
+          updateEditPreview();
+
+          document.getElementById('materialContentView').style.display = 'none';
+          document.getElementById('materialContentEdit').style.display = 'block';
+          document.getElementById('copyCodeBtn').style.display = 'inline-block';
+          document.getElementById('editModeBtn').style.display = 'none';
+          document.getElementById('saveMaterialBtn').style.display = 'inline-block';
+          document.getElementById('deleteMaterialBtn').style.display = 'inline-block';
+
+          const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
+          modal.show();
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error getting document:", error);
       }
     }
 
