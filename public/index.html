@@ -413,50 +413,48 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // Wait for Firebase to be loaded before initializing the app
-    window.addEventListener('firebaseLoaded', () => {
-      const { db, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc } = window.firebaseFunctions;
+    document.addEventListener('DOMContentLoaded', () => {
+      // Wait for Firebase to be loaded before initializing the app
+      window.addEventListener('firebaseLoaded', () => {
+        const { db, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc } = window.firebaseFunctions;
 
-      let currentCategory = '';
-      let cards = {
-        lecture: [],
-        material: [],
-        playground: []
-      };
+        let currentCategory = '';
+        let cards = {
+          lecture: [],
+          material: [],
+          playground: []
+        };
 
-      const categories = [
-        {
-          id: 'lecture',
-          title: 'Lectures',
-          description: "Let's watch AI project lectures",
-          imageUrl: 'https://imgur.com/Uyxjppa.jpg'
-        },
-        {
-          id: 'material',
-          title: 'Lecture materials',
-          description: 'You can check the lecture materials.',
-          imageUrl: 'https://imgur.com/h4XOC0d.jpg'
-        },
-        {
-          id: 'playground',
-          title: 'Playground',
-          description: 'You can practice your own projects.',
-          imageUrl: 'https://imgur.com/jIzTx3M.jpg'
-        }
-      ];
-      // 페이지 로드 시 앱 초기화
-      document.addEventListener('DOMContentLoaded', () => {
-        // Firebase 로딩이 완료된 후에 초기화를 진행합니다.
+        const categories = [
+          {
+            id: 'lecture',
+            title: 'Lectures',
+            description: "Let's watch AI project lectures",
+            imageUrl: 'https://imgur.com/Uyxjppa.jpg'
+          },
+          {
+            id: 'material',
+            title: 'Lecture materials',
+            description: 'You can check the lecture materials.',
+            imageUrl: 'https://imgur.com/h4XOC0d.jpg'
+          },
+          {
+            id: 'playground',
+            title: 'Playground',
+            description: 'You can practice your own projects.',
+            imageUrl: 'https://imgur.com/jIzTx3M.jpg'
+          }
+        ];
+        // 페이지 로드 시 앱 초기화
         initializeApp();
-      });
 
-      function initializeApp() {
-        renderCategoryCards();
-      }
+        function initializeApp() {
+          renderCategoryCards();
+        }
 
-      function renderCategoryCards() {
-        const categoryCards = document.getElementById('categoryCards');
-        categoryCards.innerHTML = categories.map(category => `
+        function renderCategoryCards() {
+          const categoryCards = document.getElementById('categoryCards');
+          categoryCards.innerHTML = categories.map(category => `
                 <div class="col-md-4">
                     <div class="card h-100 shadow">
                         <img src="${category.imageUrl}" class="card-img-top" alt="${category.title}">
@@ -468,54 +466,54 @@
                     </div>
                 </div>
             `).join('');
-      }
-
-      function showDetail(category) {
-        currentCategory = category;
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('detailContent').style.display = 'block';
-        document.getElementById('pageTitle').innerText = getCategoryTitle(category);
-        document.getElementById('addCardBtn').style.display = 'flex'; // 모든 카테고리에서 버튼 표시
-        renderCards();
-      }
-
-      async function renderCards() {
-        const sampleCards = document.getElementById('sampleCards');
-        sampleCards.innerHTML = '';
-        try {
-          const q = query(collection(db, currentCategory), orderBy('likes', 'desc'));
-          const querySnapshot = await getDocs(q);
-          querySnapshot.forEach((doc) => {
-            const card = doc.data();
-            card.id = doc.id;
-            sampleCards.innerHTML += getCardHtml(card);
-          });
-        } catch (error) {
-          console.error("Error getting documents: ", error);
         }
-      }
 
-      function getCardHtml(card) {
-        let cardContent = '';
-        if (currentCategory === 'lecture') {
-          // YouTube 링크가 'http://' 또는 'https://'로 시작하는지 확인
-          const youtubeLink = card.youtubeLink.startsWith('http://') || card.youtubeLink.startsWith('https://')
-            ? card.youtubeLink
-            : `https://${card.youtubeLink}`;
+        function showDetail(category) {
+          currentCategory = category;
+          document.getElementById('mainContent').style.display = 'none';
+          document.getElementById('detailContent').style.display = 'block';
+          document.getElementById('pageTitle').innerText = getCategoryTitle(category);
+          document.getElementById('addCardBtn').style.display = 'flex'; // 모든 카테고리에서 버튼 표시
+          renderCards();
+        }
 
-          cardContent = `
+        async function renderCards() {
+          const sampleCards = document.getElementById('sampleCards');
+          sampleCards.innerHTML = '';
+          try {
+            const q = query(collection(db, currentCategory), orderBy('likes', 'desc'));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+              const card = doc.data();
+              card.id = doc.id;
+              sampleCards.innerHTML += getCardHtml(card);
+            });
+          } catch (error) {
+            console.error("Error getting documents: ", error);
+          }
+        }
+
+        function getCardHtml(card) {
+          let cardContent = '';
+          if (currentCategory === 'lecture') {
+            // YouTube 링크가 'http://' 또는 'https://'로 시작하는지 확인
+            const youtubeLink = card.youtubeLink.startsWith('http://') || card.youtubeLink.startsWith('https://')
+              ? card.youtubeLink
+              : `https://${card.youtubeLink}`;
+
+            cardContent = `
                 <a href="${youtubeLink}" target="_blank" class="btn btn-primary">Watch Lecture</a>
             `;
-        } else if (currentCategory === 'material' || currentCategory === 'playground') {
-          cardContent = `
+          } else if (currentCategory === 'material' || currentCategory === 'playground') {
+            cardContent = `
                 <button class="btn btn-primary" onclick="showMaterialContent(${card.id})">View Content</button>
             `;
-        }
-        if (currentCategory === 'playground') {
-          cardContent += `<p><strong>Author:</strong> ${card.author}</p>`;
-        }
+          }
+          if (currentCategory === 'playground') {
+            cardContent += `<p><strong>Author:</strong> ${card.author}</p>`;
+          }
 
-        return `
+          return `
                 <div class="col-md-4">
                     <div class="card h-100 shadow">
                         <img src="/api/placeholder/400/200" class="card-img-top" alt="${card.title}">
@@ -535,447 +533,448 @@
                     </div>
                 </div>
             `;
-      }
-
-      async function toggleLike(id) {
-        try {
-          const docRef = doc(db, currentCategory, id);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const currentLikes = docSnap.data().likes || 0;
-            await updateDoc(docRef, {
-              likes: currentLikes > 0 ? 0 : 1
-            });
-            await renderCards();
-          }
-        } catch (error) {
-          console.error("Error toggling like: ", error);
         }
-      }
 
-      function promptPassword() {
-        if (currentCategory === 'playground') {
-          showNewCardModal();
-        } else {
-          const password = prompt("Password?");
-          if (password === "0425") {
-            if (currentCategory === 'lecture') {
-              showNewCardModal();
-            } else if (currentCategory === 'material') {
-              showNewMaterialCardModal();
+        async function toggleLike(id) {
+          try {
+            const docRef = doc(db, currentCategory, id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const currentLikes = docSnap.data().likes || 0;
+              await updateDoc(docRef, {
+                likes: currentLikes > 0 ? 0 : 1
+              });
+              await renderCards();
             }
+          } catch (error) {
+            console.error("Error toggling like: ", error);
+          }
+        }
+
+        function promptPassword() {
+          if (currentCategory === 'playground') {
+            showNewCardModal();
           } else {
-            alert("Wrong password!");
-          }
-        }
-      }
-
-      function showNewCardModal() {
-        const modal = new bootstrap.Modal(document.getElementById('newCardModal'));
-        if (currentCategory === 'playground') {
-          document.getElementById('youtubeLinkField').style.display = 'none';
-          document.getElementById('authorField').style.display = 'block';
-          document.getElementById('passwordField').style.display = 'block';
-          document.getElementById('htmlEditorField').style.display = 'block';
-        } else if (currentCategory === 'lecture') {
-          document.getElementById('youtubeLinkField').style.display = 'block';
-          document.getElementById('authorField').style.display = 'none';
-          document.getElementById('passwordField').style.display = 'none';
-          document.getElementById('htmlEditorField').style.display = 'none';
-        } else {
-          // Material 카테고리는 별도의 모달을 사용하므로 여기서는 처리하지 않습니다.
-        }
-        modal.show();
-      }
-
-      // addNewCard 함수 수정
-      async function addNewCard() {
-        const title = document.getElementById('cardTitle').value;
-        const description = document.getElementById('cardDescription').value;
-        const youtubeLink = document.getElementById('cardYoutubeLink').value;
-        const author = document.getElementById('cardAuthor').value;
-        const password = document.getElementById('cardPassword').value;
-        const htmlContent = document.getElementById('cardHtmlContent')?.value;
-
-        if (title && description && (currentCategory !== 'playground' || (author && password))) {
-          const newCard = {
-            title: title,
-            description: description,
-            likes: 0
-          };
-
-          if (currentCategory === 'lecture') {
-            newCard.youtubeLink = youtubeLink;
-          } else if (currentCategory === 'playground') {
-            newCard.author = author;
-            newCard.password = password;
-            newCard.htmlContent = htmlContent;
-          }
-
-          try {
-            await addDoc(collection(db, currentCategory), newCard);
-            await renderCards();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('newCardModal'));
-            modal.hide();
-            document.getElementById('newCardForm').reset();
-          } catch (error) {
-            console.error("Error adding new card: ", error);
-            alert('카드 추가 중 오류가 발생했습니다.');
-          }
-        } else {
-          alert('모든 필드를 입력해주세요.');
-        }
-      }
-
-      function showMain() {
-        document.getElementById('mainContent').style.display = 'block';
-        document.getElementById('detailContent').style.display = 'none';
-        document.getElementById('pageTitle').innerText = 'TalkCoding';
-        document.getElementById('addCardBtn').style.display = 'none';
-      }
-
-      function getCategoryTitle(category) {
-        const foundCategory = categories.find(c => c.id === category);
-        return foundCategory ? foundCategory.title : '카테고리';
-      }
-
-
-      async function showEditCardModal(cardId) {
-        try {
-          const docRef = doc(db, currentCategory, cardId);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const card = docSnap.data();
-            card.id = docSnap.id;
-
-            document.getElementById('editCardId').value = card.id;
-            document.getElementById('editCardTitle').value = card.title;
-            document.getElementById('editCardDescription').value = card.description;
-
-            if (currentCategory === 'lecture') {
-              document.getElementById('editCardYoutubeLink').value = card.youtubeLink;
-            } else if (currentCategory === 'playground') {
-              document.getElementById('editCardAuthor').value = card.author;
-            }
-
-            const modal = new bootstrap.Modal(document.getElementById('editCardModal'));
-            modal.show();
-          } else {
-            console.log("No such document!");
-          }
-        } catch (error) {
-          console.error("Error getting document:", error);
-        }
-      }
-
-      async function saveEditedCard() {
-        const id = document.getElementById('editCardId').value;
-        const title = document.getElementById('editCardTitle').value;
-        const description = document.getElementById('editCardDescription').value;
-        const youtubeLink = document.getElementById('editCardYoutubeLink')?.value;
-        const author = document.getElementById('editCardAuthor')?.value;
-
-        if (title && description && (currentCategory !== 'lecture' || youtubeLink) && (currentCategory !== 'playground' || author)) {
-          const updatedCard = {
-            title,
-            description
-          };
-
-          if (currentCategory === 'lecture') {
-            updatedCard.youtubeLink = youtubeLink;
-          } else if (currentCategory === 'playground') {
-            updatedCard.author = author;
-          }
-
-          try {
-            await updateDoc(doc(db, currentCategory, id), updatedCard);
-            await renderCards();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
-            modal.hide();
-          } catch (error) {
-            console.error("Error updating card: ", error);
-          }
-        } else {
-          alert('모든 필드를 입력해주세요.');
-        }
-      }
-
-
-
-
-      function showNewMaterialCardModal() {
-        document.getElementById('materialCardTitle').value = '';
-        document.getElementById('materialCardDescription').value = '';
-        document.getElementById('materialCardHtml').value = '';
-        document.getElementById('htmlPreview').innerHTML = '';
-        const modal = new bootstrap.Modal(document.getElementById('newMaterialCardModal'));
-        modal.show();
-      }
-
-      function updatePreview() {
-        const htmlContent = document.getElementById('materialCardHtml').value;
-        document.getElementById('htmlPreview').innerHTML = htmlContent;
-      }
-
-      async function addNewMaterialCard() {
-        const title = document.getElementById('materialCardTitle').value;
-        const description = document.getElementById('materialCardDescription').value;
-        const htmlContent = document.getElementById('materialCardHtml').value;
-
-        if (title && description) {
-          try {
-            await addDoc(collection(db, currentCategory), {
-              title,
-              description,
-              htmlContent,
-              likes: 0
-            });
-            await renderCards();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('newMaterialCardModal'));
-            modal.hide();
-            document.getElementById('newMaterialCardForm').reset();
-          } catch (error) {
-            console.error("Error adding new material card: ", error);
-          }
-        } else {
-          alert('제목과 내용을 입력해주세요.');
-        }
-      }
-
-
-
-      function toggleEditMode() {
-        const viewMode = document.getElementById('materialContentView');
-        const editMode = document.getElementById('materialContentEdit');
-        const copyBtn = document.getElementById('copyCodeBtn');
-        const editBtn = document.getElementById('editModeBtn');
-        const saveBtn = document.getElementById('saveMaterialBtn');
-        const deleteBtn = document.getElementById('deleteMaterialBtn');
-
-        if (viewMode.style.display !== 'none') {
-          viewMode.style.display = 'none';
-          editMode.style.display = 'block';
-          copyBtn.style.display = 'none';
-          editBtn.style.display = 'none';
-          saveBtn.style.display = 'inline-block';
-          deleteBtn.style.display = 'inline-block'; // Show delete button in edit mode
-        } else {
-          viewMode.style.display = 'block';
-          editMode.style.display = 'none';
-          copyBtn.style.display = 'inline-block';
-          editBtn.style.display = 'inline-block';
-          saveBtn.style.display = 'none';
-          deleteBtn.style.display = 'none'; // Hide delete button when returning to view mode
-        }
-      }
-
-      function updateEditPreview() {
-        const htmlContent = document.getElementById('editMaterialHtml').value;
-        const iframe = document.getElementById('editHtmlPreview');
-        iframe.srcdoc = htmlContent;
-      }
-
-      async function saveEditedMaterial() {
-        const id = document.getElementById('editMaterialId').value;
-        const title = document.getElementById('editMaterialTitle').value;
-        const description = document.getElementById('editMaterialDescription').value;
-        const htmlContent = document.getElementById('editMaterialHtml').value;
-
-        if (title && description) {
-          try {
-            await updateDoc(doc(db, currentCategory, id), {
-              title,
-              description,
-              htmlContent
-            });
-            await renderCards();
-            closeModal('materialContentModal');
-          } catch (error) {
-            console.error("Error updating document: ", error);
-            alert('자료 수정 중 오류가 발생했습니다.');
-          }
-        } else {
-          alert('제목과 내용을 입력해주세요.');
-        }
-      }
-
-      // 3 & 4. Three dots 기능 수정
-      async function showEditOptions(cardId) {
-        try {
-          const docRef = doc(db, currentCategory, cardId);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const card = docSnap.data();
-            let password;
-
-            if (currentCategory === 'playground') {
-              password = prompt("암호를 입력하세요:");
-              if (password !== card.password && password !== "0425") {
-                alert("잘못된 암호입니다.");
-                return;
+            const password = prompt("Password?");
+            if (password === "0425") {
+              if (currentCategory === 'lecture') {
+                showNewCardModal();
+              } else if (currentCategory === 'material') {
+                showNewMaterialCardModal();
               }
             } else {
-              password = prompt("암호를 입력하세요:");
-              if (password !== "0425") {
-                alert("잘못된 암호입니다.");
-                return;
-              }
+              alert("Wrong password!");
             }
+          }
+        }
+
+        function showNewCardModal() {
+          const modal = new bootstrap.Modal(document.getElementById('newCardModal'));
+          if (currentCategory === 'playground') {
+            document.getElementById('youtubeLinkField').style.display = 'none';
+            document.getElementById('authorField').style.display = 'block';
+            document.getElementById('passwordField').style.display = 'block';
+            document.getElementById('htmlEditorField').style.display = 'block';
+          } else if (currentCategory === 'lecture') {
+            document.getElementById('youtubeLinkField').style.display = 'block';
+            document.getElementById('authorField').style.display = 'none';
+            document.getElementById('passwordField').style.display = 'none';
+            document.getElementById('htmlEditorField').style.display = 'none';
+          } else {
+            // Material 카테고리는 별도의 모달을 사용하므로 여기서는 처리하지 않습니다.
+          }
+          modal.show();
+        }
+
+        // addNewCard 함수 수정
+        async function addNewCard() {
+          const title = document.getElementById('cardTitle').value;
+          const description = document.getElementById('cardDescription').value;
+          const youtubeLink = document.getElementById('cardYoutubeLink').value;
+          const author = document.getElementById('cardAuthor').value;
+          const password = document.getElementById('cardPassword').value;
+          const htmlContent = document.getElementById('cardHtmlContent')?.value;
+
+          if (title && description && (currentCategory !== 'playground' || (author && password))) {
+            const newCard = {
+              title: title,
+              description: description,
+              likes: 0
+            };
 
             if (currentCategory === 'lecture') {
-              showEditCardModal(cardId);
-            } else if (currentCategory === 'material' || currentCategory === 'playground') {
-              showMaterialEditMode(cardId);
+              newCard.youtubeLink = youtubeLink;
+            } else if (currentCategory === 'playground') {
+              newCard.author = author;
+              newCard.password = password;
+              newCard.htmlContent = htmlContent;
+            }
+
+            try {
+              await addDoc(collection(db, currentCategory), newCard);
+              await renderCards();
+              const modal = bootstrap.Modal.getInstance(document.getElementById('newCardModal'));
+              modal.hide();
+              document.getElementById('newCardForm').reset();
+            } catch (error) {
+              console.error("Error adding new card: ", error);
+              alert('카드 추가 중 오류가 발생했습니다.');
             }
           } else {
-            console.log("No such document!");
+            alert('모든 필드를 입력해주세요.');
           }
-        } catch (error) {
-          console.error("Error getting document:", error);
         }
-      }
 
-
-      function copyHtmlContent() {
-        const htmlContent = document.getElementById('editMaterialHtml').value;
-        navigator.clipboard.writeText(htmlContent).then(function () {
-          alert('HTML 코드가 클립보드에 복사되었습니다.');
-        }, function (err) {
-          console.error('클립보드 복사 실패: ', err);
-        });
-      }
-
-      async function showMaterialEditMode(cardId) {
-        try {
-          const docRef = doc(db, currentCategory, cardId);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const card = docSnap.data();
-            card.id = docSnap.id;
-
-            document.getElementById('editMaterialId').value = card.id;
-            document.getElementById('editMaterialTitle').value = card.title || '';
-            document.getElementById('editMaterialDescription').value = card.description || '';
-            document.getElementById('editMaterialHtml').value = card.htmlContent || '';
-            updateEditPreview();
-
-            document.getElementById('materialContentView').style.display = 'none';
-            document.getElementById('materialContentEdit').style.display = 'block';
-            document.getElementById('copyCodeBtn').style.display = 'inline-block';
-            document.getElementById('editModeBtn').style.display = 'none';
-            document.getElementById('saveMaterialBtn').style.display = 'inline-block';
-            document.getElementById('deleteMaterialBtn').style.display = 'inline-block';
-
-            const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
-            modal.show();
-          } else {
-            console.log("No such document!");
-          }
-        } catch (error) {
-          console.error("Error getting document:", error);
+        function showMain() {
+          document.getElementById('mainContent').style.display = 'block';
+          document.getElementById('detailContent').style.display = 'none';
+          document.getElementById('pageTitle').innerText = 'TalkCoding';
+          document.getElementById('addCardBtn').style.display = 'none';
         }
-      }
 
-
-      // showMaterialContent 함수 수정 - view content를 클릭했을 때 보이는 모달
-      async function showMaterialContent(cardId) {
-        try {
-          const docRef = doc(db, currentCategory, cardId);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const card = docSnap.data();
-            card.id = docSnap.id;
-
-            const iframe = document.createElement('iframe');
-            iframe.srcdoc = card.htmlContent || '내용이 없습니다.';
-            iframe.style.width = '100%';
-            iframe.style.height = '400px';
-            iframe.style.border = 'none';
-            iframe.sandbox = 'allow-scripts';
-
-            const contentView = document.getElementById('materialContentView');
-            contentView.innerHTML = '';
-            contentView.appendChild(iframe);
-
-            document.getElementById('editMaterialId').value = card.id;
-            document.getElementById('editMaterialHtml').value = card.htmlContent || '';
-
-            document.getElementById('materialContentView').style.display = 'block';
-            document.getElementById('materialContentEdit').style.display = 'none';
-            document.getElementById('copyCodeBtn').style.display = 'inline-block';
-            document.getElementById('editModeBtn').style.display = 'inline-block';
-            document.getElementById('deleteMaterialBtn').style.display = 'none';
-            document.getElementById('saveMaterialBtn').style.display = 'none';
-
-            const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
-            modal.show();
-          } else {
-            console.log("No such document!");
-          }
-        } catch (error) {
-          console.error("Error getting document:", error);
+        function getCategoryTitle(category) {
+          const foundCategory = categories.find(c => c.id === category);
+          return foundCategory ? foundCategory.title : '카테고리';
         }
-      }
 
-      function closeModal(modalId) {
-        const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-        if (modal) {
-          modal.hide();
-        }
-        // 모달이 완전히 닫힌 후에 추가 작업 수행
-        document.getElementById(modalId).addEventListener('hidden.bs.modal', function () {
-          document.body.classList.remove('modal-open');
-          const modalBackdrops = document.getElementsByClassName('modal-backdrop');
-          while (modalBackdrops.length > 0) {
-            modalBackdrops[0].parentNode.removeChild(modalBackdrops[0]);
-          }
-        }, { once: true });
-      }
 
-      async function deleteCard() {
-        const cardId = document.getElementById('editCardId').value;
-        if (confirm('Are you sure to delete?')) {
+        async function showEditCardModal(cardId) {
           try {
-            await deleteDoc(doc(db, currentCategory, cardId));
-            await renderCards();
-            closeModal('editCardModal');
+            const docRef = doc(db, currentCategory, cardId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              const card = docSnap.data();
+              card.id = docSnap.id;
+
+              document.getElementById('editCardId').value = card.id;
+              document.getElementById('editCardTitle').value = card.title;
+              document.getElementById('editCardDescription').value = card.description;
+
+              if (currentCategory === 'lecture') {
+                document.getElementById('editCardYoutubeLink').value = card.youtubeLink;
+              } else if (currentCategory === 'playground') {
+                document.getElementById('editCardAuthor').value = card.author;
+              }
+
+              const modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+              modal.show();
+            } else {
+              console.log("No such document!");
+            }
           } catch (error) {
-            console.error("Error deleting card: ", error);
+            console.error("Error getting document:", error);
           }
         }
-      }
 
-      async function deleteMaterial() {
-        const cardId = document.getElementById('editMaterialId').value;
-        if (confirm('Are you sure to delete?')) {
+        async function saveEditedCard() {
+          const id = document.getElementById('editCardId').value;
+          const title = document.getElementById('editCardTitle').value;
+          const description = document.getElementById('editCardDescription').value;
+          const youtubeLink = document.getElementById('editCardYoutubeLink')?.value;
+          const author = document.getElementById('editCardAuthor')?.value;
+
+          if (title && description && (currentCategory !== 'lecture' || youtubeLink) && (currentCategory !== 'playground' || author)) {
+            const updatedCard = {
+              title,
+              description
+            };
+
+            if (currentCategory === 'lecture') {
+              updatedCard.youtubeLink = youtubeLink;
+            } else if (currentCategory === 'playground') {
+              updatedCard.author = author;
+            }
+
+            try {
+              await updateDoc(doc(db, currentCategory, id), updatedCard);
+              await renderCards();
+              const modal = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
+              modal.hide();
+            } catch (error) {
+              console.error("Error updating card: ", error);
+            }
+          } else {
+            alert('모든 필드를 입력해주세요.');
+          }
+        }
+
+
+
+
+        function showNewMaterialCardModal() {
+          document.getElementById('materialCardTitle').value = '';
+          document.getElementById('materialCardDescription').value = '';
+          document.getElementById('materialCardHtml').value = '';
+          document.getElementById('htmlPreview').innerHTML = '';
+          const modal = new bootstrap.Modal(document.getElementById('newMaterialCardModal'));
+          modal.show();
+        }
+
+        function updatePreview() {
+          const htmlContent = document.getElementById('materialCardHtml').value;
+          document.getElementById('htmlPreview').innerHTML = htmlContent;
+        }
+
+        async function addNewMaterialCard() {
+          const title = document.getElementById('materialCardTitle').value;
+          const description = document.getElementById('materialCardDescription').value;
+          const htmlContent = document.getElementById('materialCardHtml').value;
+
+          if (title && description) {
+            try {
+              await addDoc(collection(db, currentCategory), {
+                title,
+                description,
+                htmlContent,
+                likes: 0
+              });
+              await renderCards();
+              const modal = bootstrap.Modal.getInstance(document.getElementById('newMaterialCardModal'));
+              modal.hide();
+              document.getElementById('newMaterialCardForm').reset();
+            } catch (error) {
+              console.error("Error adding new material card: ", error);
+            }
+          } else {
+            alert('제목과 내용을 입력해주세요.');
+          }
+        }
+
+
+
+        function toggleEditMode() {
+          const viewMode = document.getElementById('materialContentView');
+          const editMode = document.getElementById('materialContentEdit');
+          const copyBtn = document.getElementById('copyCodeBtn');
+          const editBtn = document.getElementById('editModeBtn');
+          const saveBtn = document.getElementById('saveMaterialBtn');
+          const deleteBtn = document.getElementById('deleteMaterialBtn');
+
+          if (viewMode.style.display !== 'none') {
+            viewMode.style.display = 'none';
+            editMode.style.display = 'block';
+            copyBtn.style.display = 'none';
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+            deleteBtn.style.display = 'inline-block'; // Show delete button in edit mode
+          } else {
+            viewMode.style.display = 'block';
+            editMode.style.display = 'none';
+            copyBtn.style.display = 'inline-block';
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+            deleteBtn.style.display = 'none'; // Hide delete button when returning to view mode
+          }
+        }
+
+        function updateEditPreview() {
+          const htmlContent = document.getElementById('editMaterialHtml').value;
+          const iframe = document.getElementById('editHtmlPreview');
+          iframe.srcdoc = htmlContent;
+        }
+
+        async function saveEditedMaterial() {
+          const id = document.getElementById('editMaterialId').value;
+          const title = document.getElementById('editMaterialTitle').value;
+          const description = document.getElementById('editMaterialDescription').value;
+          const htmlContent = document.getElementById('editMaterialHtml').value;
+
+          if (title && description) {
+            try {
+              await updateDoc(doc(db, currentCategory, id), {
+                title,
+                description,
+                htmlContent
+              });
+              await renderCards();
+              closeModal('materialContentModal');
+            } catch (error) {
+              console.error("Error updating document: ", error);
+              alert('자료 수정 중 오류가 발생했습니다.');
+            }
+          } else {
+            alert('제목과 내용을 입력해주세요.');
+          }
+        }
+
+        // 3 & 4. Three dots 기능 수정
+        async function showEditOptions(cardId) {
           try {
-            await deleteDoc(doc(db, currentCategory, cardId));
-            await renderCards();
-            closeModal('materialContentModal');
+            const docRef = doc(db, currentCategory, cardId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              const card = docSnap.data();
+              let password;
+
+              if (currentCategory === 'playground') {
+                password = prompt("암호를 입력하세요:");
+                if (password !== card.password && password !== "0425") {
+                  alert("잘못된 암호입니다.");
+                  return;
+                }
+              } else {
+                password = prompt("암호를 입력하세요:");
+                if (password !== "0425") {
+                  alert("잘못된 암호입니다.");
+                  return;
+                }
+              }
+
+              if (currentCategory === 'lecture') {
+                showEditCardModal(cardId);
+              } else if (currentCategory === 'material' || currentCategory === 'playground') {
+                showMaterialEditMode(cardId);
+              }
+            } else {
+              console.log("No such document!");
+            }
           } catch (error) {
-            console.error("Error deleting material: ", error);
+            console.error("Error getting document:", error);
           }
         }
-      }
-
-      function updateNewCardPreview() {
-        const htmlContent = document.getElementById('cardHtmlContent').value;
-        document.getElementById('newCardHtmlPreview').innerHTML = htmlContent;
-      }
 
 
+        function copyHtmlContent() {
+          const htmlContent = document.getElementById('editMaterialHtml').value;
+          navigator.clipboard.writeText(htmlContent).then(function () {
+            alert('HTML 코드가 클립보드에 복사되었습니다.');
+          }, function (err) {
+            console.error('클립보드 복사 실패: ', err);
+          });
+        }
+
+        async function showMaterialEditMode(cardId) {
+          try {
+            const docRef = doc(db, currentCategory, cardId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              const card = docSnap.data();
+              card.id = docSnap.id;
+
+              document.getElementById('editMaterialId').value = card.id;
+              document.getElementById('editMaterialTitle').value = card.title || '';
+              document.getElementById('editMaterialDescription').value = card.description || '';
+              document.getElementById('editMaterialHtml').value = card.htmlContent || '';
+              updateEditPreview();
+
+              document.getElementById('materialContentView').style.display = 'none';
+              document.getElementById('materialContentEdit').style.display = 'block';
+              document.getElementById('copyCodeBtn').style.display = 'inline-block';
+              document.getElementById('editModeBtn').style.display = 'none';
+              document.getElementById('saveMaterialBtn').style.display = 'inline-block';
+              document.getElementById('deleteMaterialBtn').style.display = 'inline-block';
+
+              const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
+              modal.show();
+            } else {
+              console.log("No such document!");
+            }
+          } catch (error) {
+            console.error("Error getting document:", error);
+          }
+        }
+
+
+        // showMaterialContent 함수 수정 - view content를 클릭했을 때 보이는 모달
+        async function showMaterialContent(cardId) {
+          try {
+            const docRef = doc(db, currentCategory, cardId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              const card = docSnap.data();
+              card.id = docSnap.id;
+
+              const iframe = document.createElement('iframe');
+              iframe.srcdoc = card.htmlContent || '내용이 없습니다.';
+              iframe.style.width = '100%';
+              iframe.style.height = '400px';
+              iframe.style.border = 'none';
+              iframe.sandbox = 'allow-scripts';
+
+              const contentView = document.getElementById('materialContentView');
+              contentView.innerHTML = '';
+              contentView.appendChild(iframe);
+
+              document.getElementById('editMaterialId').value = card.id;
+              document.getElementById('editMaterialHtml').value = card.htmlContent || '';
+
+              document.getElementById('materialContentView').style.display = 'block';
+              document.getElementById('materialContentEdit').style.display = 'none';
+              document.getElementById('copyCodeBtn').style.display = 'inline-block';
+              document.getElementById('editModeBtn').style.display = 'inline-block';
+              document.getElementById('deleteMaterialBtn').style.display = 'none';
+              document.getElementById('saveMaterialBtn').style.display = 'none';
+
+              const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
+              modal.show();
+            } else {
+              console.log("No such document!");
+            }
+          } catch (error) {
+            console.error("Error getting document:", error);
+          }
+        }
+
+        function closeModal(modalId) {
+          const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+          if (modal) {
+            modal.hide();
+          }
+          // 모달이 완전히 닫힌 후에 추가 작업 수행
+          document.getElementById(modalId).addEventListener('hidden.bs.modal', function () {
+            document.body.classList.remove('modal-open');
+            const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+            while (modalBackdrops.length > 0) {
+              modalBackdrops[0].parentNode.removeChild(modalBackdrops[0]);
+            }
+          }, { once: true });
+        }
+
+        async function deleteCard() {
+          const cardId = document.getElementById('editCardId').value;
+          if (confirm('Are you sure to delete?')) {
+            try {
+              await deleteDoc(doc(db, currentCategory, cardId));
+              await renderCards();
+              closeModal('editCardModal');
+            } catch (error) {
+              console.error("Error deleting card: ", error);
+            }
+          }
+        }
+
+        async function deleteMaterial() {
+          const cardId = document.getElementById('editMaterialId').value;
+          if (confirm('Are you sure to delete?')) {
+            try {
+              await deleteDoc(doc(db, currentCategory, cardId));
+              await renderCards();
+              closeModal('materialContentModal');
+            } catch (error) {
+              console.error("Error deleting material: ", error);
+            }
+          }
+        }
+
+        function updateNewCardPreview() {
+          const htmlContent = document.getElementById('cardHtmlContent').value;
+          document.getElementById('newCardHtmlPreview').innerHTML = htmlContent;
+        }
 
 
 
 
 
 
-      // 페이지 로드 시 앱 초기화
-      document.addEventListener('DOMContentLoaded', initializeApp);
+
+
+        // 페이지 로드 시 앱 초기화
+        document.addEventListener('DOMContentLoaded', initializeApp);
+      });
     });
   </script>
 
