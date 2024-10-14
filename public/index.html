@@ -416,6 +416,10 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Wait for Firebase to be loaded before initializing the app
       window.addEventListener('firebaseLoaded', () => {
+
+        // 페이지 로드 시 앱 초기화
+        initializeApp();
+
         const { db, collection, addDoc, getDocs, orderBy, query, doc, getDoc, updateDoc, deleteDoc } = window.firebaseFunctions;
 
         let currentCategory = '';
@@ -445,8 +449,6 @@
             imageUrl: 'https://imgur.com/jIzTx3M.jpg'
           }
         ];
-        // 페이지 로드 시 앱 초기화
-        initializeApp();
 
         function initializeApp() {
           renderCategoryCards();
