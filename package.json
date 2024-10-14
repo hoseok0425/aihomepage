@@ -4,11 +4,15 @@
   "description": "AI Homepage",
   "main": "index.html",
   "scripts": {
+    
     "start": "http-server",
     "deploy": "firebase deploy --only hosting",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector"
+  }
 }

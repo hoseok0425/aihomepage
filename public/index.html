@@ -2,423 +2,424 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalkCoding</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --pastel-primary: #A8D8EA;
-            --pastel-secondary: #AA96DA;
-            --pastel-success: #FCBAD3;
-            --pastel-info: #FFFFD2;
-            --pastel-warning: #FFA69E;
-            --pastel-danger: #FF9AA2;
-            --pastel-light: #F8F9FA;
-            --pastel-dark: #6B7B8C;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalkCoding</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --pastel-primary: #A8D8EA;
+      --pastel-secondary: #AA96DA;
+      --pastel-success: #FCBAD3;
+      --pastel-info: #FFFFD2;
+      --pastel-warning: #FFA69E;
+      --pastel-danger: #FF9AA2;
+      --pastel-light: #F8F9FA;
+      --pastel-dark: #6B7B8C;
+    }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: var(--pastel-light);
-        }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: var(--pastel-light);
+    }
 
-        main {
-            flex: 1;
-        }
+    main {
+      flex: 1;
+    }
 
-        .card {
-            height: 100%;
-            transition: transform 0.3s;
-            background-color: #FFFFFF;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .card {
+      height: 100%;
+      transition: transform 0.3s;
+      background-color: #FFFFFF;
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
+    .card:hover {
+      transform: translateY(-5px);
+    }
 
-        .like-btn {
-            cursor: pointer;
-            user-select: none;
-        }
+    .like-btn {
+      cursor: pointer;
+      user-select: none;
+    }
 
-        .like-btn:hover,
-        .like-btn.active {
-            color: var(--pastel-danger);
-        }
+    .like-btn:hover,
+    .like-btn.active {
+      color: var(--pastel-danger);
+    }
 
-        #addCardBtn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 30px;
-            font-size: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            background-color: var(--pastel-primary);
-            border-color: var(--pastel-primary);
-            color: var(--pastel-dark);
-            z-index: 1000;
-        }
+    #addCardBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      background-color: var(--pastel-primary);
+      border-color: var(--pastel-primary);
+      color: var(--pastel-dark);
+      z-index: 1000;
+    }
 
-        .btn-primary {
-            background-color: var(--pastel-primary);
-            border-color: var(--pastel-primary);
-            color: var(--pastel-dark);
-        }
+    .btn-primary {
+      background-color: var(--pastel-primary);
+      border-color: var(--pastel-primary);
+      color: var(--pastel-dark);
+    }
 
-        .btn-primary:hover {
-            background-color: #97C4D3;
-            border-color: #97C4D3;
-            color: var(--pastel-dark);
-        }
+    .btn-primary:hover {
+      background-color: #97C4D3;
+      border-color: #97C4D3;
+      color: var(--pastel-dark);
+    }
 
-        .btn-secondary {
-            background-color: var(--pastel-secondary);
-            border-color: var(--pastel-secondary);
-            color: white;
-        }
+    .btn-secondary {
+      background-color: var(--pastel-secondary);
+      border-color: var(--pastel-secondary);
+      color: white;
+    }
 
-        .btn-secondary:hover {
-            background-color: #9A87C4;
-            border-color: #9A87C4;
-        }
+    .btn-secondary:hover {
+      background-color: #9A87C4;
+      border-color: #9A87C4;
+    }
 
-        .bg-primary {
-            background-color: var(--pastel-primary) !important;
-        }
+    .bg-primary {
+      background-color: var(--pastel-primary) !important;
+    }
 
-        .bg-dark {
-            background-color: var(--pastel-dark) !important;
-        }
+    .bg-dark {
+      background-color: var(--pastel-dark) !important;
+    }
 
-        .card-options {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
+    .card-options {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
 
-        .text-dark {
-            color: var(--pastel-dark) !important;
-        }
+    .text-dark {
+      color: var(--pastel-dark) !important;
+    }
 
-        #htmlPreview,
-        #editHtmlPreview {
-            width: 100%;
-            height: 400px;
-            border: none;
-        }
+    #htmlPreview,
+    #editHtmlPreview {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
 
-        header,
-        footer {
-            width: 100%;
-        }
+    header,
+    footer {
+      width: 100%;
+    }
 
-        header .container,
-        footer .container {
-            max-width: 100%;
-            padding-left: 15px;
-            padding-right: 15px;
-        }
+    header .container,
+    footer .container {
+      max-width: 100%;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
 
-        .btn-pastel-danger {
-            background-color: var(--pastel-danger);
-            border-color: var(--pastel-danger);
-            color: white;
-        }
+    .btn-pastel-danger {
+      background-color: var(--pastel-danger);
+      border-color: var(--pastel-danger);
+      color: white;
+    }
 
-        .btn-pastel-danger:hover {
-            background-color: #FF8B93;
-            border-color: #FF8B93;
-        }
-    </style>
+    .btn-pastel-danger:hover {
+      background-color: #FF8B93;
+      border-color: #FF8B93;
+    }
+  </style>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDF86DoNANL6MZFVW9fN4VxpQ1mbGywm_M",
+      authDomain: "talkcoding-88821.firebaseapp.com",
+      projectId: "talkcoding-88821",
+      storageBucket: "talkcoding-88821.appspot.com",
+      messagingSenderId: "190522086889",
+      appId: "1:190522086889:web:2d2e95ef080650de736778",
+      measurementId: "G-SV9SXNK3Y8"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
 </head>
 
+
+
 <body>
-    <header class="bg-primary text-white py-4">
-        <div class="container">
-            <h1 class="display-4" id="pageTitle">TalkCoding</h1>
+  <header class="bg-primary text-white py-4">
+    <div class="container">
+      <h1 class="display-4" id="pageTitle">TalkCoding</h1>
+    </div>
+  </header>
+
+  <main class="container my-5">
+    <div id="mainContent">
+      <div class="row g-4" id="categoryCards"></div>
+    </div>
+    <div id="detailContent" style="display: none;">
+      <button onclick="showMain()" class="btn btn-secondary mb-4">Go back</button>
+      <div class="row g-4" id="sampleCards"></div>
+    </div>
+  </main>
+
+  <button id="addCardBtn" class="btn btn-primary" onclick="promptPassword()" style="display: none;">+</button>
+
+  <!-- 카드 수정을 위한 모달 -->
+  <div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editCardModalLabel">Edit Content</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-    </header>
-
-    <main class="container my-5">
-        <div id="mainContent">
-            <div class="row g-4" id="categoryCards"></div>
-        </div>
-        <div id="detailContent" style="display: none;">
-            <button onclick="showMain()" class="btn btn-secondary mb-4">Go back</button>
-            <div class="row g-4" id="sampleCards"></div>
-        </div>
-    </main>
-
-    <button id="addCardBtn" class="btn btn-primary" onclick="promptPassword()" style="display: none;">+</button>
-
-    <!-- 카드 수정을 위한 모달 -->
-    <div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editCardModalLabel">Edit Content</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editCardForm">
-                        <input type="hidden" id="editCardId">
-                        <div class="mb-3">
-                            <label for="editCardTitle" class="form-label">Lecture title</label>
-                            <input type="text" class="form-control" id="editCardTitle" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editCardDescription" class="form-label">Lecture detail</label>
-                            <textarea class="form-control" id="editCardDescription" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editCardYoutubeLink" class="form-label">Youtube link</label>
-                            <input type="url" class="form-control" id="editCardYoutubeLink" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-pastel-danger" onclick="deleteCard()">Delete</button>
-                    <button type="button" class="btn btn-primary" onclick="saveEditedCard()">Save</button>
-
-                </div>
+        <div class="modal-body">
+          <form id="editCardForm">
+            <input type="hidden" id="editCardId">
+            <div class="mb-3">
+              <label for="editCardTitle" class="form-label">Lecture title</label>
+              <input type="text" class="form-control" id="editCardTitle" required>
             </div>
+            <div class="mb-3">
+              <label for="editCardDescription" class="form-label">Lecture detail</label>
+              <textarea class="form-control" id="editCardDescription" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="editCardYoutubeLink" class="form-label">Youtube link</label>
+              <input type="url" class="form-control" id="editCardYoutubeLink" required>
+            </div>
+          </form>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-pastel-danger" onclick="deleteCard()">Delete</button>
+          <button type="button" class="btn btn-primary" onclick="saveEditedCard()">Save</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+
+    <!-- 새 자료 카드 작성을 위한 모달 -->
+    <div class="modal fade" id="newMaterialCardModal" tabindex="-1" aria-labelledby="newMaterialCardModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-black" id="newMaterialCardModalLabel">새 자료 추가</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="newMaterialCardForm">
+              <div class="mb-3">
+                <label for="materialCardTitle" class="form-label text-dark">제목</label>
+                <input type="text" class="form-control text-dark" id="materialCardTitle" required>
+              </div>
+              <div class="mb-3">
+                <label for="materialCardDescription" class="form-label text-dark">내용</label>
+                <textarea class="form-control text-dark" id="materialCardDescription" rows="3" required></textarea>
+              </div>
+              <div class="mb-3 row">
+                <div class="col-md-6">
+                  <label for="materialCardHtml" class="form-label text-dark">HTML 편집기</label>
+                  <textarea class="form-control text-dark" id="materialCardHtml" rows="10"
+                    oninput="updatePreview()"></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-dark">HTML 미리보기</label>
+                  <div id="htmlPreview" class="border p-2 text-dark" style="height: 237px; overflow: auto;"></div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+            <button type="button" class="btn btn-primary" onclick="addNewMaterialCard()">저장</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <footer>
-
-        <!-- 새 자료 카드 작성을 위한 모달 -->
-        <div class="modal fade" id="newMaterialCardModal" tabindex="-1" aria-labelledby="newMaterialCardModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-black" id="newMaterialCardModalLabel">새 자료 추가</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="newMaterialCardForm">
-                            <div class="mb-3">
-                                <label for="materialCardTitle" class="form-label text-dark">제목</label>
-                                <input type="text" class="form-control text-dark" id="materialCardTitle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="materialCardDescription" class="form-label text-dark">내용</label>
-                                <textarea class="form-control text-dark" id="materialCardDescription" rows="3"
-                                    required></textarea>
-                            </div>
-                            <div class="mb-3 row">
-                                <div class="col-md-6">
-                                    <label for="materialCardHtml" class="form-label text-dark">HTML 편집기</label>
-                                    <textarea class="form-control text-dark" id="materialCardHtml" rows="10"
-                                        oninput="updatePreview()"></textarea>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label text-dark">HTML 미리보기</label>
-                                    <div id="htmlPreview" class="border p-2 text-dark"
-                                        style="height: 237px; overflow: auto;"></div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                        <button type="button" class="btn btn-primary" onclick="addNewMaterialCard()">저장</button>
-                    </div>
+    <!-- 자료 내용 보기 및 수정을 위한 모달 -->
+    <div class="modal fade" id="materialContentModal" tabindex="-1" aria-labelledby="materialContentModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-black" id="materialContentModalLabel">Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="materialContentView"></div>
+            <div id="materialContentEdit" style="display: none;">
+              <form id="editMaterialForm">
+                <input type="hidden" id="editMaterialId">
+                <div class="mb-3">
+                  <label for="editMaterialTitle" class="form-label text-dark">Title</label>
+                  <input type="text" class="form-control text-dark" id="editMaterialTitle" required>
                 </div>
-            </div>
-        </div>
-
-        <!-- 자료 내용 보기 및 수정을 위한 모달 -->
-        <div class="modal fade" id="materialContentModal" tabindex="-1" aria-labelledby="materialContentModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-black" id="materialContentModalLabel">Contents</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="materialContentView"></div>
-                        <div id="materialContentEdit" style="display: none;">
-                            <form id="editMaterialForm">
-                                <input type="hidden" id="editMaterialId">
-                                <div class="mb-3">
-                                    <label for="editMaterialTitle" class="form-label text-dark">Title</label>
-                                    <input type="text" class="form-control text-dark" id="editMaterialTitle" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="editMaterialDescription" class="form-label text-dark">Detail</label>
-                                    <textarea class="form-control text-dark" id="editMaterialDescription" rows="3"
-                                        required></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="editMaterialHtml" class="form-label text-dark">HTML Editor</label>
-                                    <textarea class="form-control text-dark" id="editMaterialHtml" rows="15"
-                                        oninput="updateEditPreview()"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label text-dark">HTML Preview</label>
-                                    <iframe id="editHtmlPreview" sandbox="allow-scripts"></iframe>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="copyHtmlContent()" id="copyCodeBtn">Copy
-                            code</button>
-                        <button type="button" class="btn btn-primary" onclick="toggleEditMode()"
-                            id="editModeBtn">Edit</button>
-                        <button type="button" class="btn btn-success" onclick="saveEditedMaterial()"
-                            id="saveMaterialBtn" style="display: none;">Save</button>
-                        <button type="button" class="btn btn-pastel-danger" onclick="deleteMaterial()"
-                            id="deleteMaterialBtn">Delete</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
+                <div class="mb-3">
+                  <label for="editMaterialDescription" class="form-label text-dark">Detail</label>
+                  <textarea class="form-control text-dark" id="editMaterialDescription" rows="3" required></textarea>
                 </div>
-            </div>
-        </div>
-
-        <div class="coupang-partners-wrapper py-1">
-            <div class="container text-center">
-                <script src="https://ads-partners.coupang.com/g.js"></script>
-                <script>
-                    new PartnersCoupang.G({ "id": 806987, "template": "carousel", "trackingCode": "AF8400384", "width": "680", "height": "140", "tsource": "" });
-                </script>
-            </div>
-        </div>
-        <div class="container text-center" style="margin-bottom: -15px;">
-            <p class="text-dark small mb-0" style="font-size: 0.8em; line-height: 2;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른
-                일정액의 수수료를 제공받습니다.</p>
-        </div>
-
-        <div class="container-fluid bg-dark text-white py-3 mt-4">
-            <div class="container text-center">
-                <p class="mb-0" style="font-size: 1.2rem;">Hoseok Han</p>
-            </div>
-        </div>
-
-
-    </footer>
-
-    <!-- 새 카드 작성을 위한 모달 -->
-    <div class="modal fade" id="newCardModal" tabindex="-1" aria-labelledby="newCardModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="newCardModalLabel">Add new card</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="mb-3">
+                  <label for="editMaterialHtml" class="form-label text-dark">HTML Editor</label>
+                  <textarea class="form-control text-dark" id="editMaterialHtml" rows="15"
+                    oninput="updateEditPreview()"></textarea>
                 </div>
-                <div class="modal-body">
-                    <form id="newCardForm">
-                        <div class="mb-3">
-                            <label for="cardTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="cardTitle" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="cardDescription" class="form-label">Detail</label>
-                            <textarea class="form-control" id="cardDescription" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3" id="youtubeLinkField">
-                            <label for="cardYoutubeLink" class="form-label">Youtube link</label>
-                            <input type="url" class="form-control" id="cardYoutubeLink">
-                        </div>
-                        <div class="mb-3" id="authorField" style="display: none;">
-                            <label for="cardAuthor" class="form-label">Author</label>
-                            <input type="text" class="form-control" id="cardAuthor">
-                        </div>
-                        <div class="mb-3" id="passwordField" style="display: none;">
-                            <label for="cardPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="cardPassword">
-                        </div>
-                        <div id="htmlEditorField" style="display: none;">
-                            <div class="mb-3">
-                                <label for="cardHtmlContent" class="form-label">HTML Editor</label>
-                                <textarea class="form-control" id="cardHtmlContent" rows="10"
-                                    oninput="updateNewCardPreview()"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">HTML Preview</label>
-                                <div id="newCardHtmlPreview" class="border p-2" style="height: 300px; overflow: auto;">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                <div class="mb-3">
+                  <label class="form-label text-dark">HTML Preview</label>
+                  <iframe id="editHtmlPreview" sandbox="allow-scripts"></iframe>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="addNewCard()">Add</button>
-                </div>
+              </form>
             </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="copyHtmlContent()" id="copyCodeBtn">Copy
+              code</button>
+            <button type="button" class="btn btn-primary" onclick="toggleEditMode()" id="editModeBtn">Edit</button>
+            <button type="button" class="btn btn-success" onclick="saveEditedMaterial()" id="saveMaterialBtn"
+              style="display: none;">Save</button>
+            <button type="button" class="btn btn-pastel-danger" onclick="deleteMaterial()"
+              id="deleteMaterialBtn">Delete</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
         </div>
+      </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDF86DoNANL6MZFVW9fN4VxpQ1mbGywm_M",
-            authDomain: "talkcoding-88821.firebaseapp.com",
-            projectId: "talkcoding-88821",
-            storageBucket: "talkcoding-88821.appspot.com",
-            messagingSenderId: "190522086889",
-            appId: "1:190522086889:web:2d2e95ef080650de736778",
-            measurementId: "G-SV9SXNK3Y8"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-    </script>
+    <div class="coupang-partners-wrapper py-1">
+      <div class="container text-center">
+        <script src="https://ads-partners.coupang.com/g.js"></script>
+        <script>
+          new PartnersCoupang.G({ "id": 806987, "template": "carousel", "trackingCode": "AF8400384", "width": "680", "height": "140", "tsource": "" });
+        </script>
+      </div>
+    </div>
+    <div class="container text-center" style="margin-bottom: -15px;">
+      <p class="text-dark small mb-0" style="font-size: 0.8em; line-height: 2;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른
+        일정액의 수수료를 제공받습니다.</p>
+    </div>
+
+    <div class="container-fluid bg-dark text-white py-3 mt-4">
+      <div class="container text-center">
+        <p class="mb-0" style="font-size: 1.2rem;">Hoseok Han</p>
+      </div>
+    </div>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let currentCategory = '';
-        let cards = {
-            lecture: [],
-            material: [],
-            playground: []
-        };
-        const categories = [
-            {
-                id: 'lecture',
-                title: 'Lectures',
-                description: "Let's watch AI project lectures",
-                imageUrl: 'https://imgur.com/Uyxjppa.jpg'
-            },
-            {
-                id: 'material',
-                title: 'Lecture materials',
-                description: 'You can check the lecture materials.',
-                imageUrl: 'https://imgur.com/h4XOC0d.jpg'
-            },
-            {
-                id: 'playground',
-                title: 'Playground',
-                description: 'You can practice your own projects.',
-                imageUrl: 'https://imgur.com/jIzTx3M.jpg'
-            }
-        ];
+  </footer>
 
-        function initializeApp() {
-            renderCategoryCards();
-        }
+  <!-- 새 카드 작성을 위한 모달 -->
+  <div class="modal fade" id="newCardModal" tabindex="-1" aria-labelledby="newCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newCardModalLabel">Add new card</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="newCardForm">
+            <div class="mb-3">
+              <label for="cardTitle" class="form-label">Title</label>
+              <input type="text" class="form-control" id="cardTitle" required>
+            </div>
+            <div class="mb-3">
+              <label for="cardDescription" class="form-label">Detail</label>
+              <textarea class="form-control" id="cardDescription" rows="3" required></textarea>
+            </div>
+            <div class="mb-3" id="youtubeLinkField">
+              <label for="cardYoutubeLink" class="form-label">Youtube link</label>
+              <input type="url" class="form-control" id="cardYoutubeLink">
+            </div>
+            <div class="mb-3" id="authorField" style="display: none;">
+              <label for="cardAuthor" class="form-label">Author</label>
+              <input type="text" class="form-control" id="cardAuthor">
+            </div>
+            <div class="mb-3" id="passwordField" style="display: none;">
+              <label for="cardPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="cardPassword">
+            </div>
+            <div id="htmlEditorField" style="display: none;">
+              <div class="mb-3">
+                <label for="cardHtmlContent" class="form-label">HTML Editor</label>
+                <textarea class="form-control" id="cardHtmlContent" rows="10"
+                  oninput="updateNewCardPreview()"></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">HTML Preview</label>
+                <div id="newCardHtmlPreview" class="border p-2" style="height: 300px; overflow: auto;">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="addNewCard()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        function renderCategoryCards() {
-            const categoryCards = document.getElementById('categoryCards');
-            categoryCards.innerHTML = categories.map(category => `
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentCategory = '';
+    let cards = {
+      lecture: [],
+      material: [],
+      playground: []
+    };
+    const categories = [
+      {
+        id: 'lecture',
+        title: 'Lectures',
+        description: "Let's watch AI project lectures",
+        imageUrl: 'https://imgur.com/Uyxjppa.jpg'
+      },
+      {
+        id: 'material',
+        title: 'Lecture materials',
+        description: 'You can check the lecture materials.',
+        imageUrl: 'https://imgur.com/h4XOC0d.jpg'
+      },
+      {
+        id: 'playground',
+        title: 'Playground',
+        description: 'You can practice your own projects.',
+        imageUrl: 'https://imgur.com/jIzTx3M.jpg'
+      }
+    ];
+
+    function initializeApp() {
+      renderCategoryCards();
+    }
+
+    function renderCategoryCards() {
+      const categoryCards = document.getElementById('categoryCards');
+      categoryCards.innerHTML = categories.map(category => `
                 <div class="col-md-4">
                     <div class="card h-100 shadow">
                         <img src="${category.imageUrl}" class="card-img-top" alt="${category.title}">
@@ -430,50 +431,50 @@
                     </div>
                 </div>
             `).join('');
-        }
+    }
 
-        function showDetail(category) {
-            currentCategory = category;
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('detailContent').style.display = 'block';
-            document.getElementById('pageTitle').innerText = getCategoryTitle(category);
-            document.getElementById('addCardBtn').style.display = 'flex'; // 모든 카테고리에서 버튼 표시
-            renderCards();
-        }
+    function showDetail(category) {
+      currentCategory = category;
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('detailContent').style.display = 'block';
+      document.getElementById('pageTitle').innerText = getCategoryTitle(category);
+      document.getElementById('addCardBtn').style.display = 'flex'; // 모든 카테고리에서 버튼 표시
+      renderCards();
+    }
 
-        function renderCards() {
-            const sampleCards = document.getElementById('sampleCards');
-            sampleCards.innerHTML = '';
-            db.collection(currentCategory).orderBy('likes', 'desc').get().then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    const card = doc.data();
-                    card.id = doc.id;
-                    sampleCards.innerHTML += getCardHtml(card);
-                });
-            });
-        }
+    function renderCards() {
+      const sampleCards = document.getElementById('sampleCards');
+      sampleCards.innerHTML = '';
+      db.collection(currentCategory).orderBy('likes', 'desc').get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const card = doc.data();
+          card.id = doc.id;
+          sampleCards.innerHTML += getCardHtml(card);
+        });
+      });
+    }
 
-        function getCardHtml(card) {
-            let cardContent = '';
-            if (currentCategory === 'lecture') {
-                // YouTube 링크가 'http://' 또는 'https://'로 시작하는지 확인
-                const youtubeLink = card.youtubeLink.startsWith('http://') || card.youtubeLink.startsWith('https://')
-                    ? card.youtubeLink
-                    : `https://${card.youtubeLink}`;
+    function getCardHtml(card) {
+      let cardContent = '';
+      if (currentCategory === 'lecture') {
+        // YouTube 링크가 'http://' 또는 'https://'로 시작하는지 확인
+        const youtubeLink = card.youtubeLink.startsWith('http://') || card.youtubeLink.startsWith('https://')
+          ? card.youtubeLink
+          : `https://${card.youtubeLink}`;
 
-                cardContent = `
+        cardContent = `
                 <a href="${youtubeLink}" target="_blank" class="btn btn-primary">Watch Lecture</a>
             `;
-            } else if (currentCategory === 'material' || currentCategory === 'playground') {
-                cardContent = `
+      } else if (currentCategory === 'material' || currentCategory === 'playground') {
+        cardContent = `
                 <button class="btn btn-primary" onclick="showMaterialContent(${card.id})">View Content</button>
             `;
-            }
-            if (currentCategory === 'playground') {
-                cardContent += `<p><strong>Author:</strong> ${card.author}</p>`;
-            }
+      }
+      if (currentCategory === 'playground') {
+        cardContent += `<p><strong>Author:</strong> ${card.author}</p>`;
+      }
 
-            return `
+      return `
                 <div class="col-md-4">
                     <div class="card h-100 shadow">
                         <img src="/api/placeholder/400/200" class="card-img-top" alt="${card.title}">
@@ -493,377 +494,377 @@
                     </div>
                 </div>
             `;
+    }
+
+    function toggleLike(id) {
+      const docRef = db.collection(currentCategory).doc(id);
+      docRef.get().then((doc) => {
+        if (doc.exists) {
+          const currentLikes = doc.data().likes || 0;
+          docRef.update({
+            likes: currentLikes > 0 ? 0 : 1
+          }).then(() => {
+            renderCards();
+          });
+        }
+      });
+    }
+
+    function promptPassword() {
+      if (currentCategory === 'playground') {
+        showNewCardModal();
+      } else {
+        const password = prompt("Password?");
+        if (password === "0425") {
+          if (currentCategory === 'lecture') {
+            showNewCardModal();
+          } else if (currentCategory === 'material') {
+            showNewMaterialCardModal();
+          }
+        } else {
+          alert("Wrong password!");
+        }
+      }
+    }
+
+    function showNewCardModal() {
+      const modal = new bootstrap.Modal(document.getElementById('newCardModal'));
+      if (currentCategory === 'playground') {
+        document.getElementById('youtubeLinkField').style.display = 'none';
+        document.getElementById('authorField').style.display = 'block';
+        document.getElementById('passwordField').style.display = 'block';
+        document.getElementById('htmlEditorField').style.display = 'block';
+      } else if (currentCategory === 'lecture') {
+        document.getElementById('youtubeLinkField').style.display = 'block';
+        document.getElementById('authorField').style.display = 'none';
+        document.getElementById('passwordField').style.display = 'none';
+        document.getElementById('htmlEditorField').style.display = 'none';
+      } else {
+        // Material 카테고리는 별도의 모달을 사용하므로 여기서는 처리하지 않습니다.
+      }
+      modal.show();
+    }
+
+    // addNewCard 함수 수정
+    function addNewCard() {
+      const title = document.getElementById('cardTitle').value;
+      const description = document.getElementById('cardDescription').value;
+      const youtubeLink = document.getElementById('cardYoutubeLink').value;
+      const author = document.getElementById('cardAuthor').value;
+      const password = document.getElementById('cardPassword').value;
+      const htmlContent = document.getElementById('cardHtmlContent')?.value;
+
+      if (title && description && (currentCategory !== 'playground' || (author && password))) {
+        const newCard = {
+          title: title,
+          description: description,
+          likes: 0
+        };
+
+        if (currentCategory === 'lecture') {
+          newCard.youtubeLink = youtubeLink;
+        } else if (currentCategory === 'playground') {
+          newCard.author = author;
+          newCard.password = password;
+          newCard.htmlContent = htmlContent;
         }
 
-        function toggleLike(id) {
-            const docRef = db.collection(currentCategory).doc(id);
-            docRef.get().then((doc) => {
-                if (doc.exists) {
-                    const currentLikes = doc.data().likes || 0;
-                    docRef.update({
-                        likes: currentLikes > 0 ? 0 : 1
-                    }).then(() => {
-                        renderCards();
-                    });
-                }
-            });
+        db.collection(currentCategory).add(newCard).then(() => {
+          renderCards();
+          const modal = bootstrap.Modal.getInstance(document.getElementById('newCardModal'));
+          modal.hide();
+          document.getElementById('newCardForm').reset();
+        });
+      } else {
+        alert('모든 필드를 입력해주세요.');
+      }
+    }
+
+    function showMain() {
+      document.getElementById('mainContent').style.display = 'block';
+      document.getElementById('detailContent').style.display = 'none';
+      document.getElementById('pageTitle').innerText = 'TalkCoding';
+      document.getElementById('addCardBtn').style.display = 'none';
+    }
+
+    function getCategoryTitle(category) {
+      const foundCategory = categories.find(c => c.id === category);
+      return foundCategory ? foundCategory.title : '카테고리';
+    }
+
+
+    function showEditCardModal(cardId) {
+      const card = cards[currentCategory].find(c => c.id === cardId);
+      if (card) {
+        document.getElementById('editCardId').value = card.id;
+        document.getElementById('editCardTitle').value = card.title;
+        document.getElementById('editCardDescription').value = card.description;
+        if (currentCategory === 'lecture') {
+          document.getElementById('editCardYoutubeLink').value = card.youtubeLink;
+        } else if (currentCategory === 'playground') {
+          document.getElementById('editCardAuthor').value = card.author;
         }
 
-        function promptPassword() {
-            if (currentCategory === 'playground') {
-                showNewCardModal();
-            } else {
-                const password = prompt("Password?");
-                if (password === "0425") {
-                    if (currentCategory === 'lecture') {
-                        showNewCardModal();
-                    } else if (currentCategory === 'material') {
-                        showNewMaterialCardModal();
-                    }
-                } else {
-                    alert("Wrong password!");
-                }
-            }
+        const modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+        modal.show();
+      }
+    }
+
+    function saveEditedCard() {
+      const id = document.getElementById('editCardId').value;
+      const title = document.getElementById('editCardTitle').value;
+      const description = document.getElementById('editCardDescription').value;
+      const youtubeLink = document.getElementById('editCardYoutubeLink')?.value;
+      const author = document.getElementById('editCardAuthor')?.value;
+
+      if (title && description && (currentCategory !== 'lecture' || youtubeLink) && (currentCategory !== 'playground' || author)) {
+        const updatedCard = {
+          title,
+          description
+        };
+
+        if (currentCategory === 'lecture') {
+          updatedCard.youtubeLink = youtubeLink;
+        } else if (currentCategory === 'playground') {
+          updatedCard.author = author;
         }
 
-        function showNewCardModal() {
-            const modal = new bootstrap.Modal(document.getElementById('newCardModal'));
-            if (currentCategory === 'playground') {
-                document.getElementById('youtubeLinkField').style.display = 'none';
-                document.getElementById('authorField').style.display = 'block';
-                document.getElementById('passwordField').style.display = 'block';
-                document.getElementById('htmlEditorField').style.display = 'block';
-            } else if (currentCategory === 'lecture') {
-                document.getElementById('youtubeLinkField').style.display = 'block';
-                document.getElementById('authorField').style.display = 'none';
-                document.getElementById('passwordField').style.display = 'none';
-                document.getElementById('htmlEditorField').style.display = 'none';
-            } else {
-                // Material 카테고리는 별도의 모달을 사용하므로 여기서는 처리하지 않습니다.
-            }
-            modal.show();
+        db.collection(currentCategory).doc(id).update(updatedCard).then(() => {
+          renderCards();
+          const modal = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
+          modal.hide();
+        });
+      } else {
+        alert('모든 필드를 입력해주세요.');
+      }
+    }
+
+
+
+
+    function showNewMaterialCardModal() {
+      document.getElementById('materialCardTitle').value = '';
+      document.getElementById('materialCardDescription').value = '';
+      document.getElementById('materialCardHtml').value = '';
+      document.getElementById('htmlPreview').innerHTML = '';
+      const modal = new bootstrap.Modal(document.getElementById('newMaterialCardModal'));
+      modal.show();
+    }
+
+    function updatePreview() {
+      const htmlContent = document.getElementById('materialCardHtml').value;
+      document.getElementById('htmlPreview').innerHTML = htmlContent;
+    }
+
+    function addNewMaterialCard() {
+      const title = document.getElementById('materialCardTitle').value;
+      const description = document.getElementById('materialCardDescription').value;
+      const htmlContent = document.getElementById('materialCardHtml').value;
+
+      if (title && description) {
+        const newId = Math.max(...cards[currentCategory].map(c => c.id), 0) + 1;
+        cards[currentCategory].push({
+          id: newId,
+          title: title,
+          description: description,
+          htmlContent: htmlContent,
+          likes: 0
+        });
+        renderCards();
+        const modal = bootstrap.Modal.getInstance(document.getElementById('newMaterialCardModal'));
+        modal.hide();
+        document.getElementById('newMaterialCardForm').reset();
+      } else {
+        alert('제목과 내용을 입력해주세요.');
+      }
+    }
+
+
+
+    function toggleEditMode() {
+      const viewMode = document.getElementById('materialContentView');
+      const editMode = document.getElementById('materialContentEdit');
+      const copyBtn = document.getElementById('copyCodeBtn');
+      const editBtn = document.getElementById('editModeBtn');
+      const saveBtn = document.getElementById('saveMaterialBtn');
+      const deleteBtn = document.getElementById('deleteMaterialBtn');
+
+      if (viewMode.style.display !== 'none') {
+        viewMode.style.display = 'none';
+        editMode.style.display = 'block';
+        copyBtn.style.display = 'none';
+        editBtn.style.display = 'none';
+        saveBtn.style.display = 'inline-block';
+        deleteBtn.style.display = 'inline-block'; // Show delete button in edit mode
+      } else {
+        viewMode.style.display = 'block';
+        editMode.style.display = 'none';
+        copyBtn.style.display = 'inline-block';
+        editBtn.style.display = 'inline-block';
+        saveBtn.style.display = 'none';
+        deleteBtn.style.display = 'none'; // Hide delete button when returning to view mode
+      }
+    }
+
+    function updateEditPreview() {
+      const htmlContent = document.getElementById('editMaterialHtml').value;
+      const iframe = document.getElementById('editHtmlPreview');
+      iframe.srcdoc = htmlContent;
+    }
+
+    function saveEditedMaterial() {
+      const id = parseInt(document.getElementById('editMaterialId').value);
+      const title = document.getElementById('editMaterialTitle').value;
+      const description = document.getElementById('editMaterialDescription').value;
+      const htmlContent = document.getElementById('editMaterialHtml').value;
+
+      if (title && description) {
+        const cardIndex = cards[currentCategory].findIndex(c => c.id === id);
+        if (cardIndex !== -1) {
+          cards[currentCategory][cardIndex] = {
+            ...cards[currentCategory][cardIndex],
+            title,
+            description,
+            htmlContent
+          };
+          renderCards();
+          closeModal('materialContentModal'); // 수정된 부분
         }
+      } else {
+        alert('제목과 내용을 입력해주세요.');
+      }
+    }
 
-        // addNewCard 함수 수정
-        function addNewCard() {
-            const title = document.getElementById('cardTitle').value;
-            const description = document.getElementById('cardDescription').value;
-            const youtubeLink = document.getElementById('cardYoutubeLink').value;
-            const author = document.getElementById('cardAuthor').value;
-            const password = document.getElementById('cardPassword').value;
-            const htmlContent = document.getElementById('cardHtmlContent')?.value;
+    // 3 & 4. Three dots 기능 수정
+    function showEditOptions(cardId) {
+      const card = cards[currentCategory].find(c => c.id === cardId);
+      if (!card) return;
 
-            if (title && description && (currentCategory !== 'playground' || (author && password))) {
-                const newCard = {
-                    title: title,
-                    description: description,
-                    likes: 0
-                };
-
-                if (currentCategory === 'lecture') {
-                    newCard.youtubeLink = youtubeLink;
-                } else if (currentCategory === 'playground') {
-                    newCard.author = author;
-                    newCard.password = password;
-                    newCard.htmlContent = htmlContent;
-                }
-
-                db.collection(currentCategory).add(newCard).then(() => {
-                    renderCards();
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('newCardModal'));
-                    modal.hide();
-                    document.getElementById('newCardForm').reset();
-                });
-            } else {
-                alert('모든 필드를 입력해주세요.');
-            }
+      let password;
+      if (currentCategory === 'playground') {
+        password = prompt("암호를 입력하세요:");
+        if (password !== card.password && password !== "0425") {
+          alert("잘못된 암호입니다.");
+          return;
         }
-
-        function showMain() {
-            document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('detailContent').style.display = 'none';
-            document.getElementById('pageTitle').innerText = 'TalkCoding';
-            document.getElementById('addCardBtn').style.display = 'none';
+      } else {
+        password = prompt("암호를 입력하세요:");
+        if (password !== "0425") {
+          alert("잘못된 암호입니다.");
+          return;
         }
+      }
 
-        function getCategoryTitle(category) {
-            const foundCategory = categories.find(c => c.id === category);
-            return foundCategory ? foundCategory.title : '카테고리';
+      if (currentCategory === 'lecture') {
+        showEditCardModal(cardId);
+      } else if (currentCategory === 'material' || currentCategory === 'playground') {
+        showMaterialEditMode(cardId);
+      }
+    }
+
+
+    function copyHtmlContent() {
+      const htmlContent = document.getElementById('editMaterialHtml').value;
+      navigator.clipboard.writeText(htmlContent).then(function () {
+        alert('HTML 코드가 클립보드에 복사되었습니다.');
+      }, function (err) {
+        console.error('클립보드 복사 실패: ', err);
+      });
+    }
+
+    function showMaterialEditMode(cardId) {
+      const card = cards[currentCategory].find(c => c.id === cardId);
+      if (card) {
+        document.getElementById('editMaterialId').value = cardId;
+        document.getElementById('editMaterialTitle').value = card.title || '';
+        document.getElementById('editMaterialDescription').value = card.description || '';
+        document.getElementById('editMaterialHtml').value = card.htmlContent || '';
+        updateEditPreview();
+
+        document.getElementById('materialContentView').style.display = 'none';
+        document.getElementById('materialContentEdit').style.display = 'block';
+        document.getElementById('copyCodeBtn').style.display = 'inline-block';
+        document.getElementById('editModeBtn').style.display = 'none';
+        document.getElementById('saveMaterialBtn').style.display = 'inline-block';
+        document.getElementById('deleteMaterialBtn').style.display = 'inline-block'; // Show delete button
+
+        const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
+        modal.show();
+      }
+    }
+
+
+    // showMaterialContent 함수 수정 - view content를 클릭했을 때 보이는 모달
+    function showMaterialContent(cardId) {
+      const card = cards[currentCategory].find(c => c.id === cardId);
+      if (card) {
+        const iframe = document.createElement('iframe');
+        iframe.srcdoc = card.htmlContent || '내용이 없습니다.';
+        iframe.style.width = '100%';
+        iframe.style.height = '400px';
+        iframe.style.border = 'none';
+        iframe.sandbox = 'allow-scripts';
+
+        const contentView = document.getElementById('materialContentView');
+        contentView.innerHTML = '';
+        contentView.appendChild(iframe);
+
+        document.getElementById('editMaterialId').value = cardId;
+        document.getElementById('editMaterialHtml').value = card.htmlContent || '';
+
+        document.getElementById('materialContentView').style.display = 'block';
+        document.getElementById('materialContentEdit').style.display = 'none';
+        document.getElementById('copyCodeBtn').style.display = 'inline-block';
+        document.getElementById('editModeBtn').style.display = 'none';
+        document.getElementById('deleteMaterialBtn').style.display = 'none'; // Hide delete button
+        document.getElementById('saveMaterialBtn').style.display = 'none';
+
+        const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
+        modal.show();
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+      if (modal) {
+        modal.hide();
+      }
+      // 모달이 완전히 닫힌 후에 추가 작업 수행
+      document.getElementById(modalId).addEventListener('hidden.bs.modal', function () {
+        document.body.classList.remove('modal-open');
+        const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+        while (modalBackdrops.length > 0) {
+          modalBackdrops[0].parentNode.removeChild(modalBackdrops[0]);
         }
+      }, { once: true });
+    }
 
+    function deleteCard() {
+      const cardId = document.getElementById('editCardId').value;
+      if (confirm('Are you sure to delete?')) {
+        db.collection(currentCategory).doc(cardId).delete().then(() => {
+          renderCards();
+          closeModal('editCardModal');
+        });
+      }
+    }
 
-        function showEditCardModal(cardId) {
-            const card = cards[currentCategory].find(c => c.id === cardId);
-            if (card) {
-                document.getElementById('editCardId').value = card.id;
-                document.getElementById('editCardTitle').value = card.title;
-                document.getElementById('editCardDescription').value = card.description;
-                if (currentCategory === 'lecture') {
-                    document.getElementById('editCardYoutubeLink').value = card.youtubeLink;
-                } else if (currentCategory === 'playground') {
-                    document.getElementById('editCardAuthor').value = card.author;
-                }
-
-                const modal = new bootstrap.Modal(document.getElementById('editCardModal'));
-                modal.show();
-            }
+    function deleteMaterial() {
+      const cardId = parseInt(document.getElementById('editMaterialId').value);
+      if (confirm('Are you sure to delete?')) {
+        const cardIndex = cards[currentCategory].findIndex(c => c.id === cardId);
+        if (cardIndex !== -1) {
+          cards[currentCategory].splice(cardIndex, 1);
+          renderCards();
+          closeModal('materialContentModal');
         }
+      }
+    }
 
-        function saveEditedCard() {
-            const id = document.getElementById('editCardId').value;
-            const title = document.getElementById('editCardTitle').value;
-            const description = document.getElementById('editCardDescription').value;
-            const youtubeLink = document.getElementById('editCardYoutubeLink')?.value;
-            const author = document.getElementById('editCardAuthor')?.value;
-
-            if (title && description && (currentCategory !== 'lecture' || youtubeLink) && (currentCategory !== 'playground' || author)) {
-                const updatedCard = {
-                    title,
-                    description
-                };
-
-                if (currentCategory === 'lecture') {
-                    updatedCard.youtubeLink = youtubeLink;
-                } else if (currentCategory === 'playground') {
-                    updatedCard.author = author;
-                }
-
-                db.collection(currentCategory).doc(id).update(updatedCard).then(() => {
-                    renderCards();
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
-                    modal.hide();
-                });
-            } else {
-                alert('모든 필드를 입력해주세요.');
-            }
-        }
-
-
-
-
-        function showNewMaterialCardModal() {
-            document.getElementById('materialCardTitle').value = '';
-            document.getElementById('materialCardDescription').value = '';
-            document.getElementById('materialCardHtml').value = '';
-            document.getElementById('htmlPreview').innerHTML = '';
-            const modal = new bootstrap.Modal(document.getElementById('newMaterialCardModal'));
-            modal.show();
-        }
-
-        function updatePreview() {
-            const htmlContent = document.getElementById('materialCardHtml').value;
-            document.getElementById('htmlPreview').innerHTML = htmlContent;
-        }
-
-        function addNewMaterialCard() {
-            const title = document.getElementById('materialCardTitle').value;
-            const description = document.getElementById('materialCardDescription').value;
-            const htmlContent = document.getElementById('materialCardHtml').value;
-
-            if (title && description) {
-                const newId = Math.max(...cards[currentCategory].map(c => c.id), 0) + 1;
-                cards[currentCategory].push({
-                    id: newId,
-                    title: title,
-                    description: description,
-                    htmlContent: htmlContent,
-                    likes: 0
-                });
-                renderCards();
-                const modal = bootstrap.Modal.getInstance(document.getElementById('newMaterialCardModal'));
-                modal.hide();
-                document.getElementById('newMaterialCardForm').reset();
-            } else {
-                alert('제목과 내용을 입력해주세요.');
-            }
-        }
-
-
-
-        function toggleEditMode() {
-            const viewMode = document.getElementById('materialContentView');
-            const editMode = document.getElementById('materialContentEdit');
-            const copyBtn = document.getElementById('copyCodeBtn');
-            const editBtn = document.getElementById('editModeBtn');
-            const saveBtn = document.getElementById('saveMaterialBtn');
-            const deleteBtn = document.getElementById('deleteMaterialBtn');
-
-            if (viewMode.style.display !== 'none') {
-                viewMode.style.display = 'none';
-                editMode.style.display = 'block';
-                copyBtn.style.display = 'none';
-                editBtn.style.display = 'none';
-                saveBtn.style.display = 'inline-block';
-                deleteBtn.style.display = 'inline-block'; // Show delete button in edit mode
-            } else {
-                viewMode.style.display = 'block';
-                editMode.style.display = 'none';
-                copyBtn.style.display = 'inline-block';
-                editBtn.style.display = 'inline-block';
-                saveBtn.style.display = 'none';
-                deleteBtn.style.display = 'none'; // Hide delete button when returning to view mode
-            }
-        }
-
-        function updateEditPreview() {
-            const htmlContent = document.getElementById('editMaterialHtml').value;
-            const iframe = document.getElementById('editHtmlPreview');
-            iframe.srcdoc = htmlContent;
-        }
-
-        function saveEditedMaterial() {
-            const id = parseInt(document.getElementById('editMaterialId').value);
-            const title = document.getElementById('editMaterialTitle').value;
-            const description = document.getElementById('editMaterialDescription').value;
-            const htmlContent = document.getElementById('editMaterialHtml').value;
-
-            if (title && description) {
-                const cardIndex = cards[currentCategory].findIndex(c => c.id === id);
-                if (cardIndex !== -1) {
-                    cards[currentCategory][cardIndex] = {
-                        ...cards[currentCategory][cardIndex],
-                        title,
-                        description,
-                        htmlContent
-                    };
-                    renderCards();
-                    closeModal('materialContentModal'); // 수정된 부분
-                }
-            } else {
-                alert('제목과 내용을 입력해주세요.');
-            }
-        }
-
-        // 3 & 4. Three dots 기능 수정
-        function showEditOptions(cardId) {
-            const card = cards[currentCategory].find(c => c.id === cardId);
-            if (!card) return;
-
-            let password;
-            if (currentCategory === 'playground') {
-                password = prompt("암호를 입력하세요:");
-                if (password !== card.password && password !== "0425") {
-                    alert("잘못된 암호입니다.");
-                    return;
-                }
-            } else {
-                password = prompt("암호를 입력하세요:");
-                if (password !== "0425") {
-                    alert("잘못된 암호입니다.");
-                    return;
-                }
-            }
-
-            if (currentCategory === 'lecture') {
-                showEditCardModal(cardId);
-            } else if (currentCategory === 'material' || currentCategory === 'playground') {
-                showMaterialEditMode(cardId);
-            }
-        }
-
-
-        function copyHtmlContent() {
-            const htmlContent = document.getElementById('editMaterialHtml').value;
-            navigator.clipboard.writeText(htmlContent).then(function () {
-                alert('HTML 코드가 클립보드에 복사되었습니다.');
-            }, function (err) {
-                console.error('클립보드 복사 실패: ', err);
-            });
-        }
-
-        function showMaterialEditMode(cardId) {
-            const card = cards[currentCategory].find(c => c.id === cardId);
-            if (card) {
-                document.getElementById('editMaterialId').value = cardId;
-                document.getElementById('editMaterialTitle').value = card.title || '';
-                document.getElementById('editMaterialDescription').value = card.description || '';
-                document.getElementById('editMaterialHtml').value = card.htmlContent || '';
-                updateEditPreview();
-
-                document.getElementById('materialContentView').style.display = 'none';
-                document.getElementById('materialContentEdit').style.display = 'block';
-                document.getElementById('copyCodeBtn').style.display = 'inline-block';
-                document.getElementById('editModeBtn').style.display = 'none';
-                document.getElementById('saveMaterialBtn').style.display = 'inline-block';
-                document.getElementById('deleteMaterialBtn').style.display = 'inline-block'; // Show delete button
-
-                const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
-                modal.show();
-            }
-        }
-
-
-        // showMaterialContent 함수 수정 - view content를 클릭했을 때 보이는 모달
-        function showMaterialContent(cardId) {
-            const card = cards[currentCategory].find(c => c.id === cardId);
-            if (card) {
-                const iframe = document.createElement('iframe');
-                iframe.srcdoc = card.htmlContent || '내용이 없습니다.';
-                iframe.style.width = '100%';
-                iframe.style.height = '400px';
-                iframe.style.border = 'none';
-                iframe.sandbox = 'allow-scripts';
-
-                const contentView = document.getElementById('materialContentView');
-                contentView.innerHTML = '';
-                contentView.appendChild(iframe);
-
-                document.getElementById('editMaterialId').value = cardId;
-                document.getElementById('editMaterialHtml').value = card.htmlContent || '';
-
-                document.getElementById('materialContentView').style.display = 'block';
-                document.getElementById('materialContentEdit').style.display = 'none';
-                document.getElementById('copyCodeBtn').style.display = 'inline-block';
-                document.getElementById('editModeBtn').style.display = 'none';
-                document.getElementById('deleteMaterialBtn').style.display = 'none'; // Hide delete button
-                document.getElementById('saveMaterialBtn').style.display = 'none';
-
-                const modal = new bootstrap.Modal(document.getElementById('materialContentModal'));
-                modal.show();
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-            if (modal) {
-                modal.hide();
-            }
-            // 모달이 완전히 닫힌 후에 추가 작업 수행
-            document.getElementById(modalId).addEventListener('hidden.bs.modal', function () {
-                document.body.classList.remove('modal-open');
-                const modalBackdrops = document.getElementsByClassName('modal-backdrop');
-                while (modalBackdrops.length > 0) {
-                    modalBackdrops[0].parentNode.removeChild(modalBackdrops[0]);
-                }
-            }, { once: true });
-        }
-
-        function deleteCard() {
-            const cardId = document.getElementById('editCardId').value;
-            if (confirm('Are you sure to delete?')) {
-                db.collection(currentCategory).doc(cardId).delete().then(() => {
-                    renderCards();
-                    closeModal('editCardModal');
-                });
-            }
-        }
-
-        function deleteMaterial() {
-            const cardId = parseInt(document.getElementById('editMaterialId').value);
-            if (confirm('Are you sure to delete?')) {
-                const cardIndex = cards[currentCategory].findIndex(c => c.id === cardId);
-                if (cardIndex !== -1) {
-                    cards[currentCategory].splice(cardIndex, 1);
-                    renderCards();
-                    closeModal('materialContentModal');
-                }
-            }
-        }
-
-        function updateNewCardPreview() {
-            const htmlContent = document.getElementById('cardHtmlContent').value;
-            document.getElementById('newCardHtmlPreview').innerHTML = htmlContent;
-        }
+    function updateNewCardPreview() {
+      const htmlContent = document.getElementById('cardHtmlContent').value;
+      document.getElementById('newCardHtmlPreview').innerHTML = htmlContent;
+    }
 
 
 
@@ -872,9 +873,9 @@
 
 
 
-        // 페이지 로드 시 앱 초기화
-        document.addEventListener('DOMContentLoaded', initializeApp);
-    </script>
+    // 페이지 로드 시 앱 초기화
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
 
 </body>
 
